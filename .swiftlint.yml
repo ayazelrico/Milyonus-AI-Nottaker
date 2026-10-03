@@ -1,0 +1,28 @@
+included:
+  - app/Sources
+  - app/Tests
+excluded:
+  - app/.build
+  - app/.swiftpm
+line_length:
+  warning: 140
+  error: 180
+  ignores_urls: true
+type_body_length:
+  warning: 400
+  error: 500
+file_length:
+  warning: 600
+  error: 800
+trailing_comma:
+  mandatory_comma: true
+identifier_name:
+  min_length:
+    warning: 2
+  excluded:
+    - id
+    - x
+    - y
+    - r
+    - g
+    - b

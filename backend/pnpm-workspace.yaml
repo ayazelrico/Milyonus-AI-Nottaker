@@ -1,0 +1,6 @@
+allowBuilds:
+  esbuild@0.28.2: true
+storeDir: ../.pnpm-store
+cacheDir: ../.pnpm-cache
+verifyDepsBeforeRun: error
+saveExact: true

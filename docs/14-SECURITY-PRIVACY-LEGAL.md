@@ -1,0 +1,32 @@
+# 14 - Security, privacy, and legal boundaries
+
+Reconstructed engineering requirements, not a legal opinion or a claim of compliance.
+
+- Provider API keys stay in backend/.env.local or CI secret stores. Empty .env.example values only.
+- Never read or print secret files during agent work. Runtime may load its own configured secrets.
+- Access/refresh credentials use Keychain once sign-in exists. No token in UserDefaults or logs.
+- Backend auth verifies signature, issuer, audience, expiry, subject, and authenticated role.
+- Disable raw request logging. Do not log transcripts, audio, prompts, tokens, or provider errors
+  that may echo content. Return generic errors and log only allowlisted metadata.
+- All future exposed database tables require RLS and cross-workspace isolation tests. User-editable
+  metadata cannot authorize access. A service-role credential is server-only.
+- Ask for meeting consent before capturing either channel or minting a paid STT token. OS permission
+  is a separate requirement. Revocation must stop capture and close streams.
+- Treat transcripts, uploaded docs, and fetched pages as untrusted data. They cannot override system
+  prompts or authorize tools. Prompt injection and grounding evaluations are release gates.
+- Real recordings and transcript fixtures never enter the repository. Use synthetic fixtures.
+- Define cache/buffer lifetime, encryption, deletion, and export before persisting real content.
+- Do not promise ZDR, training exclusion, legal compliance, or screen-share invisibility without
+  provider contracts and tested product behavior.
+
+## Phase 0 data map
+
+The sample app holds synthetic meeting data in memory and language preferences locally. It does not
+capture audio, authenticate users, upload content, or call AI. The backend processes JWTs only when
+a caller invokes protected endpoints. No database or external project is provisioned by scaffolding.
+
+## Before real user data
+
+Confirm contracting entity, subprocessors/regions, DPA and retention terms, breach response, consent
+copy, deletion/export behavior, and provider training/ZDR terms. Owner and appropriate legal review
+must resolve these items before any production claims or launch.

@@ -1,0 +1,8 @@
+--swiftversion 6.0
+--indent 4
+--maxwidth 120
+--linebreaks lf
+--commas always
+--wraparguments before-first
+--wrapparameters before-first
+--exclude .build,.swiftpm,build,.tools

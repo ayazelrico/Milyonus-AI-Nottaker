@@ -1,0 +1,65 @@
+import Foundation
+
+public enum AudioChannel: String, Sendable, Codable, CaseIterable {
+    case microphone
+    case system
+}
+
+/// Mono, signed PCM16, little-endian audio at 16 kHz. Timestamps use a shared monotonic clock.
+public struct AudioFrame: Sendable, Equatable {
+    public static let sampleRate = 16000
+    public static let bytesPerSample = 2
+
+    public let channel: AudioChannel
+    public let timestampNanoseconds: UInt64
+    public let pcm16: Data
+
+    public var sampleCount: Int {
+        pcm16.count / Self.bytesPerSample
+    }
+
+    public var durationSeconds: TimeInterval {
+        Double(sampleCount) / Double(Self.sampleRate)
+    }
+
+    public init(channel: AudioChannel, timestampNanoseconds: UInt64, pcm16: Data) throws {
+        guard !pcm16.isEmpty else { throw DomainValidationError.emptyAudioFrame }
+        guard pcm16.count.isMultiple(of: Self.bytesPerSample) else {
+            throw DomainValidationError.incompletePCM16Sample
+        }
+        self.channel = channel
+        self.timestampNanoseconds = timestampNanoseconds
+        self.pcm16 = pcm16
+    }
+}
+
+public struct TranscriptSegment: Sendable, Identifiable, Equatable {
+    public let id: UUID
+    public let meetingID: UUID
+    public let channel: AudioChannel
+    public let text: String
+    public let startMilliseconds: Int
+    public let endMilliseconds: Int
+    public let isFinal: Bool
+
+    public init(
+        id: UUID = UUID(),
+        meetingID: UUID,
+        channel: AudioChannel,
+        text: String,
+        startMilliseconds: Int,
+        endMilliseconds: Int,
+        isFinal: Bool
+    ) throws {
+        guard startMilliseconds >= 0, endMilliseconds >= startMilliseconds else {
+            throw DomainValidationError.invalidTranscriptRange
+        }
+        self.id = id
+        self.meetingID = meetingID
+        self.channel = channel
+        self.text = text
+        self.startMilliseconds = startMilliseconds
+        self.endMilliseconds = endMilliseconds
+        self.isFinal = isFinal
+    }
+}

@@ -1,0 +1,75 @@
+name: Foundation checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: foundation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: Swift build, tests, and lint
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Install pinned repository-local tools
+        run: bash scripts/install-swift-tools.sh
+      - name: Check resources and source boundaries
+        run: |
+          python3 scripts/generate-localizations.py --check
+          python3 scripts/check-repository.py
+      - name: Build and test
+        run: |
+          bash scripts/test-swift.sh
+          swift build --package-path app -Xswiftc -warnings-as-errors
+      - name: Lint and format
+        run: |
+          .tools/bin/swiftlint lint --strict --config .swiftlint.yml
+          .tools/bin/swiftformat app --lint --config .swiftformat
+      - name: Package and verify resources
+        run: |
+          bash scripts/bundle-app.sh debug
+          "build/Milyonus Nottaker.app/Contents/MacOS/MilyonusApp" --smoke-test
+          bash scripts/bundle-app.sh release
+          "build/Milyonus Nottaker.app/Contents/MacOS/MilyonusApp" --smoke-test
+  backend:
+    name: Backend build, tests, and lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+      - run: pnpm --dir backend install --frozen-lockfile
+      - run: pnpm --dir backend build
+      - run: pnpm --dir backend test
+      - run: pnpm --dir backend lint
+  secrets:
+    name: Secret scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+      - name: Download and verify Gitleaks
+        run: |
+          curl --fail --location --proto '=https' --tlsv1.2 https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz -o /tmp/gitleaks.tar.gz
+          echo '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  /tmp/gitleaks.tar.gz' | sha256sum --check
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+      - name: Scan committed history with redacted output
+        run: /tmp/gitleaks git . --redact --no-banner

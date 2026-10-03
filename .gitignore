@@ -1,0 +1,44 @@
+# Operating system and editor state
+.DS_Store
+.idea/
+*.swp
+*.xcuserstate
+xcuserdata/
+
+# Build output and repository-local tools/caches
+build/
+.build/
+.swiftpm/
+.tools/
+.pnpm-store/
+.pnpm-cache/
+node_modules/
+dist/
+coverage/
+.swiftlint-cache/
+.swiftformat.cache
+__pycache__/
+*.pyc
+
+# Secrets and certificates
+.env
+.env.*
+!.env.example
+*.p12
+*.p8
+*.pem
+*.key
+*.mobileprovision
+
+# Real meeting artifacts must never be committed
+recordings/
+transcripts/
+*.wav
+*.pcm
+*.m4a
+*.mp3
+*.log
+
+# Local service state
+supabase/.temp/
+supabase/.branches/

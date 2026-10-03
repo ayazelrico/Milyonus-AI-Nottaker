@@ -1,0 +1,22 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSMicrophoneUsageDescription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Milyonus Nottaker needs microphone access to transcribe meetings you choose to record."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Milyonus Nottaker, kaydetmeyi seçtiğiniz toplantıları yazıya dökmek için mikrofon erişimine ihtiyaç duyar."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
