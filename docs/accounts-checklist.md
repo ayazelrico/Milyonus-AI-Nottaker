@@ -3,7 +3,8 @@
 Private repository checklist containing readiness only. No credentials or personal account details.
 
 - [x] Private GitHub repository exists and read access is verified.
-- [ ] GitHub branch protection is enabled and verified after CI checks exist.
+- [ ] GitHub branch protection is enabled and verified. GitHub returned HTTP 403 for this private
+  repository on the current account plan after CI checks passed on 2026-10-03.
 - [ ] Stable Apple development signing identity is selected.
 - [ ] Apple Developer Program and distribution team ownership are confirmed.
 - [ ] Supabase development project, region, Auth providers, and redirect URIs are approved.
