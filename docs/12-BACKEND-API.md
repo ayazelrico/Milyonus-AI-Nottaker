@@ -1,6 +1,7 @@
 # 12 - Backend API
 
-Status: Phase 0 local foundation. No hosted backend or Supabase project has been provisioned.
+Status: Phase 0 local backend foundation. A dedicated empty Supabase development database is
+provisioned, but the backend is not deployed or connected to it yet.
 
 ## Runtime and commands
 

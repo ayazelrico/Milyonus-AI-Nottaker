@@ -11,7 +11,7 @@ Reconstructed on 2026-10-02. Unknowns are not silently treated as completed setu
 | Provider accounts/keys | No real STT/AI smoke tests | Owner configures secret stores; no secrets in chat or Git |
 | Hosting and region | Dev deployment pending | Prepare deployable backend; no paid provisioning without approval |
 | Dev/staging/prod ambiguity | Accidental environment coupling | Local development now; choose cloud environments before provisioning |
-| Supabase Auth/schema | Real login and RLS acceptance pending | P0-06/P0-07 depend on approved project setup and data model |
+| Supabase Auth integration | Real login acceptance pending | Development schema and RLS tests pass; P0-07 must configure providers, redirects, Keychain sessions, and backend connectivity |
 | GitHub plan/protection | Private branch protection is unavailable on the current account plan | GitHub returned HTTP 403 on 2026-10-03; retain private visibility and enable protection after a plan upgrade |
 | Font redistribution | Bundled OFL assets need notices retained | Inter Tight and Instrument Serif licenses and pinned source are committed; system fallback remains usable |
 | EN/TR code switching | Model language support is not bilingual quality | Evaluate fixed EN/TR and code-switching independently in Phase 1 |

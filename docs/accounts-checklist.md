@@ -7,7 +7,8 @@ Private repository checklist containing readiness only. No credentials or person
   repository on the current account plan after CI checks passed on 2026-10-03.
 - [ ] Stable Apple development signing identity is selected.
 - [ ] Apple Developer Program and distribution team ownership are confirmed.
-- [ ] Supabase development project, region, Auth providers, and redirect URIs are approved.
+- [x] Dedicated Supabase development project and Frankfurt (`eu-central-1`) region are approved.
+- [ ] Supabase Auth providers and redirect URIs are approved.
 - [ ] Backend hosting and development deployment budget are approved.
 - [ ] Anthropic organization and data-use terms are verified.
 - [ ] Deepgram and alternative STT accounts are ready for evaluation.
