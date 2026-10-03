@@ -61,7 +61,8 @@
                             .font(DesignTokens.Typography.cardTitle)
                         Text(verbatim: preferences
                             .text(
-                                "Inter Tight and Instrument Serif are bundled under the SIL Open Font License. System font fallbacks remain available."
+                                "Inter Tight and Instrument Serif are bundled under the SIL Open Font License. "
+                                    + "System font fallbacks remain available."
                             ))
                             .foregroundStyle(DesignTokens.Palette.secondary)
                         Text(verbatim: preferences

@@ -198,7 +198,9 @@ struct SampleMeetingView: View {
 }
 
 private enum SampleContent {
-    static let summary = "The team wants follow-ups to be easier to find and act on. They agreed to start with a concise meeting summary and clear action owners, then test the flow with a small group before expanding the scope."
+    static let summary = "The team wants follow-ups to be easier to find and act on. "
+        + "They agreed to start with a concise meeting summary and clear action owners, "
+        + "then test the flow with a small group before expanding the scope."
     static let decisions = [
         "Keep the first version focused on summaries and action items.",
         "Review the sample flow with three teammates before the next planning session.",

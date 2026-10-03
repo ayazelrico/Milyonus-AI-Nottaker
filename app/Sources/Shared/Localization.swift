@@ -40,10 +40,9 @@ public enum AppStrings {
     }
 
     private static let resources: Bundle = {
-        if let resourceURL = Bundle.main.resourceURL?
-            .appendingPathComponent("MilyonusNottaker_Shared.bundle"),
-            let packagedBundle = Bundle(url: resourceURL)
-        {
+        let resourceURL = Bundle.main.resourceURL?
+            .appendingPathComponent("MilyonusNottaker_Shared.bundle")
+        if let resourceURL, let packagedBundle = Bundle(url: resourceURL) {
             return packagedBundle
         }
         return Bundle.module

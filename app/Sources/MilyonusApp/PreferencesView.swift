@@ -51,7 +51,8 @@ struct PreferencesView: View {
                         .foregroundStyle(DesignTokens.Palette.foreground)
                     Text(verbatim: preferences
                         .text(
-                            "This preview does not capture your microphone or system audio, request recording permissions, or send meeting data to a server."
+                            "This preview does not capture your microphone or system audio, request recording permissions, "
+                                + "or send meeting data to a server."
                         ))
                         .foregroundStyle(DesignTokens.Palette.secondary)
                         .lineSpacing(DesignTokens.Layout.lineHeight)
@@ -124,7 +125,8 @@ struct KnowledgeView: View {
                 Image(systemName: "lock.shield").foregroundStyle(DesignTokens.Palette.cyan)
                 Text(verbatim: preferences
                     .text(
-                        "Your documents will only be used after you choose to add them. You will be able to review sources for grounded suggestions."
+                        "Your documents will only be used after you choose to add them. "
+                            + "You will be able to review sources for grounded suggestions."
                     ))
                     .foregroundStyle(DesignTokens.Palette.secondary)
                     .lineSpacing(DesignTokens.Layout.lineHeight)
