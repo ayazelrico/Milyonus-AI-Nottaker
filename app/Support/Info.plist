@@ -12,6 +12,14 @@
     <key>CFBundleShortVersionString</key><string>0.1.0</string>
     <key>CFBundleVersion</key><string>1</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key><string>com.milyonus.nottaker.auth</string>
+            <key>CFBundleURLSchemes</key>
+            <array><string>milyonus-nottaker</string></array>
+        </dict>
+    </array>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>NSHighResolutionCapable</key><true/>
     <key>NSPrincipalClass</key><string>NSApplication</string>

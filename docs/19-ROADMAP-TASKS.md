@@ -4,7 +4,7 @@ Task IDs: `P<phase>-<nn>`. Tick `[x]` when done. Work from a task spec, implemen
 Durations are estimates, not delivery guarantees. External account/signing dependencies are tracked separately.
 
 
-## Foundation status (2026-10-03)
+## Foundation status (2026-10-04)
 
 The missing planning set has been reconstructed under the owner's authorization. Local implementation
 is being verified. A runnable local preview does not satisfy cloud deployment, stable TCC signing,
@@ -21,7 +21,8 @@ Goal: repo, accounts, skeletons, bundling, CI. Acceptance: empty app launches as
 - [x] P0-04 Backend skeleton: Fastify, config, health route, JWT middleware, Vitest, ESLint, `.env.example`
 - [ ] P0-05 `scripts/bundle-app.sh` + entitlements + Info.plist + stable dev signing; app launches with menu bar icon
 - [x] P0-06 Supabase environments (region and dev/staging/prod split approved before provisioning), migrations folder, initial schema (`users`, `workspaces`, `profiles`, `meetings`, `transcript_segments`), RLS tests
-- [ ] P0-07 Auth: Supabase Auth config (Apple/Google/magic link), app sign-in via ASWebAuthenticationSession, Keychain access/refresh session, `GET /v1/me`
+- [ ] P0-07 Auth: implementation complete for Magic Link, Apple/Google entry points, PKCE, Keychain,
+  callback handling, and `GET /v1/me`; dashboard redirect plus real Magic Link acceptance remain
 - [ ] P0-08 CI: app build/test/lint on macOS runner; backend build/lint/test; secret scanning; approved dev health deployment
 - [x] P0-09 DesignSystem v0: tokens, fonts registered, Gallery window with 5 base components
 - [ ] P0-10 Legal groundwork: data map draft, provider terms checklist (ZDR, training), decide contracting entity (see `20`)

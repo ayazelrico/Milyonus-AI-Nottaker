@@ -15,10 +15,11 @@ stream; metering and session limits must be enforced separately before paid usag
 |---|---|---|
 | Shared | Foundation only | Sendable domain types, external-service protocols, localization |
 | DesignSystem | Shared, native UI frameworks | All visual tokens and reusable components |
-| MilyonusApp | Shared, DesignSystem | Composition root, windows, menu bar, sample workspace, settings |
+| Authentication | Shared, pinned Supabase Auth SDK | PKCE sign-in, Keychain session, backend identity check |
+| MilyonusApp | Shared, DesignSystem, Authentication | Composition root, windows, menu bar, sample workspace, settings |
 
 Add AudioCapture, Transcription, InsightEngine, KnowledgeBase, PostMeeting, CalendarIntegration,
-Persistence, Authentication, and Billing targets when each receives tested behavior. Do not create
+Persistence, and Billing targets when each receives tested behavior. Do not create
 empty packages and tests merely to simulate implementation. Feature modules may depend on Shared
 and DesignSystem; they cannot import each other. Only MilyonusApp wires implementations together.
 
@@ -50,7 +51,9 @@ Package resource bundles must be copied into the .app and verified outside the b
 Cloud inference does not prohibit local encrypted caches. The future authoritative account data
 is in cloud Postgres with workspace isolation. Local transcript caches and rolling audio buffers
 require explicit retention, encryption, and deletion tests before use. The Phase 0 sample lives
-in memory only; only harmless preferences may use UserDefaults.
+in memory only; only harmless preferences may use UserDefaults. Supabase access and refresh sessions
+use an application-specific Keychain service. Public client configuration may be embedded in a local
+generated bundle; provider and service-role secrets never enter the app.
 
 ## Distribution and observability
 

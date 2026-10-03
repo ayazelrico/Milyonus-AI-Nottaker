@@ -24,6 +24,47 @@ cp "$BIN_DIR/MilyonusApp" "$CONTENTS/MacOS/MilyonusApp"
 cp "$APP_DIR/Support/Info.plist" "$CONTENTS/Info.plist"
 cp -R "$APP_DIR/Support/en.lproj" "$APP_DIR/Support/tr.lproj" "$CONTENTS/Resources/"
 
+# Optional public runtime configuration is embedded in the generated bundle only. The ignored
+# app/.env.local file is never copied into the app or repository.
+python3 - "$APP_DIR/.env.local" "$CONTENTS/Info.plist" <<'PY'
+import os
+from pathlib import Path
+import plistlib
+import sys
+
+environment_path = Path(sys.argv[1])
+plist_path = Path(sys.argv[2])
+allowed = {"SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "BACKEND_BASE_URL"}
+values = {}
+if environment_path.exists():
+    for number, raw_line in enumerate(environment_path.read_text(encoding="utf-8").splitlines(), 1):
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        name, separator, value = line.partition("=")
+        if not separator or name not in allowed or name in values:
+            raise SystemExit(f"Invalid app/.env.local entry on line {number}")
+        values[name] = value.strip()
+for name in allowed:
+    if os.environ.get(name):
+        values[name] = os.environ[name]
+
+url = values.get("SUPABASE_URL", "")
+key = values.get("SUPABASE_PUBLISHABLE_KEY", "")
+if bool(url) != bool(key):
+    raise SystemExit("SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY must be configured together.")
+
+with plist_path.open("rb") as input_file:
+    plist = plistlib.load(input_file)
+if url:
+    plist["MilyonusSupabaseURL"] = url
+    plist["MilyonusSupabasePublishableKey"] = key
+if values.get("BACKEND_BASE_URL"):
+    plist["MilyonusBackendBaseURL"] = values["BACKEND_BASE_URL"]
+with plist_path.open("wb") as output_file:
+    plistlib.dump(plist, output_file, sort_keys=False)
+PY
+
 # The app's resource locators prefer standard Contents/Resources bundles and fall back to
 # SwiftPM's generated Bundle.module path for command-line builds and tests.
 for resource_bundle in "$BIN_DIR"/*.bundle; do
@@ -40,6 +81,11 @@ for size in 16 32 128 256 512; do
 done
 iconutil -c icns "$ICONSET" -o "$CONTENTS/Resources/AppIcon.icns"
 /usr/bin/plutil -lint "$CONTENTS/Info.plist" >/dev/null
+CALLBACK_SCHEME="$(/usr/bin/plutil -extract CFBundleURLTypes.0.CFBundleURLSchemes.0 raw "$CONTENTS/Info.plist")"
+if [[ "$CALLBACK_SCHEME" != "milyonus-nottaker" ]]; then
+  printf 'Bundle callback URL scheme is missing.\n' >&2
+  exit 1
+fi
 
 if [[ "$IDENTITY" == - ]]; then
   codesign --force --sign - --entitlements "$APP_DIR/Support/MilyonusApp.entitlements" "$STAGED_APP"

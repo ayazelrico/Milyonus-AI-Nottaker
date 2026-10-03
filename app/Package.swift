@@ -8,7 +8,11 @@ let package = Package(
     products: [
         .library(name: "Shared", targets: ["Shared"]),
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
+        .library(name: "Authentication", targets: ["Authentication"]),
         .executable(name: "MilyonusApp", targets: ["MilyonusApp"]),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/supabase/supabase-swift.git", exact: "2.55.3"),
     ],
     targets: [
         .target(
@@ -17,9 +21,17 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(name: "DesignSystem", dependencies: ["Shared"], resources: [.process("Resources")]),
-        .executableTarget(name: "MilyonusApp", dependencies: ["Shared", "DesignSystem"]),
+        .target(
+            name: "Authentication",
+            dependencies: ["Shared", .product(name: "Auth", package: "supabase-swift")]
+        ),
+        .executableTarget(name: "MilyonusApp", dependencies: ["Shared", "DesignSystem", "Authentication"]),
         .testTarget(name: "SharedTests", dependencies: ["Shared"]),
         .testTarget(name: "DesignSystemTests", dependencies: ["DesignSystem"]),
+        .testTarget(
+            name: "AuthenticationTests",
+            dependencies: ["Authentication", "Shared", .product(name: "Auth", package: "supabase-swift")]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

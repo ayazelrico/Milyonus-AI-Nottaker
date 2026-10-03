@@ -6,6 +6,14 @@ public enum SignInProvider: String, Sendable, Codable {
     case email
 }
 
+public struct AccountIdentity: Sendable, Equatable {
+    public let userID: UUID
+
+    public init(userID: UUID) {
+        self.userID = userID
+    }
+}
+
 /// Session credentials are transient. Implementations persist them only through Keychain.
 public struct AuthSession: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
     public let userID: UUID

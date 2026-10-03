@@ -28,6 +28,14 @@ Do not read secrets to diagnose setup. Configure backend/.env.local privately, u
 .env.example variable names and docs/12. A public local health endpoint works without cloud keys;
 protected endpoints fail closed until auth is configured.
 
+For native account testing, copy `app/.env.example` to the ignored `app/.env.local` and set the
+development project URL and modern `sb_publishable_` key. `BACKEND_BASE_URL` is optional; when present,
+the app requires `GET /v1/me` to confirm the same signed user before showing Connected. The bundle
+script reads this ignored file and embeds only these public runtime values into the generated app.
+It never copies the file. Run the bundle script again after changing configuration. The registered
+callback is `milyonus-nottaker://auth/callback`, which must also appear in the Supabase redirect
+allowlist. Service-role, OAuth provider, and server signing secrets are forbidden in app configuration.
+
 ## When Xcode is necessary
 
 Recent Command Line Tools ship Swift Testing but do not put its framework on SwiftPM's default
