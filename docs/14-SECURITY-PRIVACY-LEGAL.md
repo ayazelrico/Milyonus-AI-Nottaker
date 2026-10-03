@@ -23,7 +23,8 @@ Reconstructed engineering requirements, not a legal opinion or a claim of compli
 
 The sample app holds synthetic meeting data in memory and language preferences locally. It does not
 capture audio, authenticate users, upload content, or call AI. The backend processes JWTs only when
-a caller invokes protected endpoints. No database or external project is provisioned by scaffolding.
+a caller invokes protected endpoints. The dedicated Supabase development project contains an empty
+RLS-protected schema and no real user, meeting, transcript, or credential data.
 
 ## Before real user data
 

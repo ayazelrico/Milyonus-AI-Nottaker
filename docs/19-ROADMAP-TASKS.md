@@ -20,7 +20,7 @@ Goal: repo, accounts, skeletons, bundling, CI. Acceptance: empty app launches as
 - [x] P0-03 Swift package per `02-ARCHITECTURE.md`; protocols in `Shared`; meaningful tests for implemented modules
 - [x] P0-04 Backend skeleton: Fastify, config, health route, JWT middleware, Vitest, ESLint, `.env.example`
 - [ ] P0-05 `scripts/bundle-app.sh` + entitlements + Info.plist + stable dev signing; app launches with menu bar icon
-- [ ] P0-06 Supabase environments (region and dev/staging/prod split approved before provisioning), migrations folder, initial schema (`users`, `workspaces`, `profiles`, `meetings`, `transcript_segments`), RLS tests
+- [x] P0-06 Supabase environments (region and dev/staging/prod split approved before provisioning), migrations folder, initial schema (`users`, `workspaces`, `profiles`, `meetings`, `transcript_segments`), RLS tests
 - [ ] P0-07 Auth: Supabase Auth config (Apple/Google/magic link), app sign-in via ASWebAuthenticationSession, Keychain access/refresh session, `GET /v1/me`
 - [ ] P0-08 CI: app build/test/lint on macOS runner; backend build/lint/test; secret scanning; approved dev health deployment
 - [x] P0-09 DesignSystem v0: tokens, fonts registered, Gallery window with 5 base components

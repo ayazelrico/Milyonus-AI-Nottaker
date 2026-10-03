@@ -11,6 +11,8 @@ This repository is the **Phase 0 foundation**. It is not a production recording 
 - Shared service contracts, input validation, consent/readiness state transitions, and localization.
 - Native DesignSystem with five base components and a debug-only component Gallery.
 - Fastify backend with public health, fail-closed JWT-protected identity, and metadata-only logging.
+- Dedicated Supabase development schema with workspace RLS, transactional isolation tests, and
+  generated backend types. It is not connected to the application yet.
 - Repository-local development tools, reproducible resources, signed local preview packaging, and CI.
 
 Audio capture, STT, AI suggestions, real account sign-in, cloud storage, calendar, and subscriptions

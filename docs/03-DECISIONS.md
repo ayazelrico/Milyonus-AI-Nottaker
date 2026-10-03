@@ -21,6 +21,7 @@ implementation choices from unresolved account, commercial, and legal decisions.
 | ADR-014 | Adopted | Supabase access and refresh credentials may use Keychain; provider API secrets never enter client |
 | ADR-015 | Adopted | Brand fonts are bundled only with redistribution licenses; system fonts are an explicit temporary fallback |
 | ADR-016 | Deferred | Screen-share hiding is best effort, version-tested, never advertised as a privacy guarantee |
+| ADR-017 | Adopted | Supabase development uses a dedicated eu-central-1 project; staging and production will use separate projects and data before those environments are provisioned |
 
 The owner authorized filling missing plans and continuing on 2026-10-02. Routine implementation
 choices within these boundaries do not require repeated plan approvals. Installations, paid resources,

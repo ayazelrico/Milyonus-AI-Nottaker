@@ -1,6 +1,7 @@
 # 11 - Data model
 
-Reconstructed design direction. No cloud schema or real transcript persistence is deployed in Phase 0.
+The initial development schema is deployed to a dedicated Supabase project in `eu-central-1`. It is
+empty and is not connected to the application or backend yet. No real transcript data is stored.
 
 Account identity comes from the auth provider. Domain entities are workspace, membership, profile,
 meeting, transcript segment, summary, action item, document, chunk, and usage event. All owned content
@@ -15,6 +16,18 @@ Before migrations: specify columns and constraints, tenant policies, indexes, de
 retention, and migration rollback strategy in P0-06. Apply RLS to exposed tables and test users from
 different workspaces. SQL policy tests must run against a real isolated test database. Do not mark
 schema acceptance based solely on migration file inspection.
+
+The initial schema uses Supabase `auth.users` as identity and does not duplicate credentials in a
+public users table. `profiles` stores self-visible application preferences. `workspaces` gain an owner
+membership at creation; membership mutations remain backend-only. `meetings` and
+`transcript_segments` carry workspace and creator identifiers, indexed foreign keys, constrained
+states, and RLS policies. Authenticated users can only access member workspaces. Anonymous users have
+no grants on application tables.
+
+The transactional test in `supabase/tests/rls_workspace_isolation.sql` creates two synthetic users and
+workspaces, verifies read and write isolation in both directions, checks anonymous grants, and rolls
+back all fixtures. Supabase security advisor has no findings. Performance advisor only reports unused
+indexes because all application tables are intentionally empty.
 
 Local persistence is deferred. Encrypt real transcript text, protect keys in Keychain, and bound
 rolling audio buffers. The synthetic workspace remains in memory; only UI preferences persist now.
