@@ -18,6 +18,50 @@ public protocol AudioCaptureMetricsService: Sendable {
     func captureMetrics() async -> AudioCaptureMetrics
 }
 
+public enum AppPermission: String, Sendable, CaseIterable, Codable {
+    case microphone
+    case systemAudio
+    case notifications
+}
+
+public enum AppPermissionStatus: String, Sendable, Equatable, Codable {
+    case notDetermined
+    case granted
+    case denied
+    case restartRequired
+}
+
+public struct PermissionSnapshot: Sendable, Equatable {
+    public let microphone: AppPermissionStatus
+    public let systemAudio: AppPermissionStatus
+    public let notifications: AppPermissionStatus
+
+    public init(
+        microphone: AppPermissionStatus,
+        systemAudio: AppPermissionStatus,
+        notifications: AppPermissionStatus
+    ) {
+        self.microphone = microphone
+        self.systemAudio = systemAudio
+        self.notifications = notifications
+    }
+
+    public subscript(permission: AppPermission) -> AppPermissionStatus {
+        switch permission {
+        case .microphone: microphone
+        case .systemAudio: systemAudio
+        case .notifications: notifications
+        }
+    }
+}
+
+public protocol PermissionService: Sendable {
+    func snapshot() async -> PermissionSnapshot
+    func request(_ permission: AppPermission) async -> AppPermissionStatus
+    func openSystemSettings(for permission: AppPermission) async throws
+    func restartApplication() async throws
+}
+
 public protocol TranscriptionService: Sendable {
     func availability() async -> ServiceAvailability
     func transcribe(

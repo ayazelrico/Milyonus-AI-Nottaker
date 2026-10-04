@@ -23,10 +23,12 @@ Reconstructed engineering requirements, not a legal opinion or a claim of compli
 
 The sample app holds synthetic meeting data in memory and language preferences locally. When account
 configuration is present, it can authenticate a user through Supabase and store the session only in
-Keychain. It does not capture audio, upload meeting content, or call AI. The backend processes JWTs
-only when a caller invokes protected endpoints. The dedicated Supabase development project contains
-an RLS-protected schema. A real auth acceptance user must not be treated as consent to store meeting
-or transcript content.
+Keychain. Settings can display and explicitly request microphone, screen-capture, and notification
+authorization, but granting those permissions does not start capture. The app does not capture audio,
+upload meeting content, or call AI. The backend processes JWTs only when a caller invokes protected
+endpoints. The dedicated Supabase development project contains an RLS-protected schema. A real auth
+acceptance user or an OS permission grant must not be treated as meeting consent or consent to store
+meeting or transcript content.
 
 ## Before real user data
 

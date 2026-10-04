@@ -1998,6 +1998,96 @@
         "en": { "stringUnit": { "state": "translated", "value": "We could not sign you out. Please try again." } },
         "tr": { "stringUnit": { "state": "translated", "value": "Çıkış yapılamadı. Lütfen tekrar deneyin." } }
       }
+    },
+    "Permissions": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Permissions" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "İzinler" } }
+      }
+    },
+    "Microphone": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Microphone" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Mikrofon" } }
+      }
+    },
+    "System audio": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "System audio" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Sistem sesi" } }
+      }
+    },
+    "Notifications": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Notifications" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Bildirimler" } }
+      }
+    },
+    "Permissions enable app features. Meeting consent is reviewed separately before every recording.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Permissions enable app features. Meeting consent is reviewed separately before every recording." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "İzinler uygulama özelliklerini etkinleştirir. Toplantı onayı her kayıttan önce ayrıca değerlendirilir." } }
+      }
+    },
+    "Granted": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Granted" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "İzin verildi" } }
+      }
+    },
+    "Denied": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Denied" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Reddedildi" } }
+      }
+    },
+    "Restart required": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Restart required" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Yeniden başlatma gerekiyor" } }
+      }
+    },
+    "Request": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Request" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "İzin iste" } }
+      }
+    },
+    "Open System Settings": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Open System Settings" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Sistem Ayarları'nı aç" } }
+      }
+    },
+    "Restart Milyonus": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Restart Milyonus" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Milyonus'u yeniden başlat" } }
+      }
+    },
+    "System Settings could not be opened.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "System Settings could not be opened." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Sistem Ayarları açılamadı." } }
+      }
+    },
+    "Milyonus could not restart automatically. Quit and reopen the app.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Milyonus could not restart automatically. Quit and reopen the app." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Milyonus otomatik olarak yeniden başlatılamadı. Uygulamadan çıkıp yeniden açın." } }
+      }
+    },
+    "Permission prompts appear only after you choose Request. Audio capture remains off.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Permission prompts appear only after you choose Request. Audio capture remains off." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "İzin istemleri yalnızca İzin iste seçeneğine bastığınızda görünür. Ses yakalama kapalı kalır." } }
+      }
+    },
+    "Meeting consent is required separately before every recording.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Meeting consent is required separately before every recording." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Her kayıttan önce ayrıca toplantı onayı gerekir." } }
+      }
     }
   },
   "version": "1.0"

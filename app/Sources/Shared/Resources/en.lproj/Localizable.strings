@@ -38,6 +38,7 @@
 "Could we start with a short recap, then make each action and its owner easy to scan?" = "Could we start with a short recap, then make each action and its owner easy to scan?";
 "DESIGN SYSTEM" = "DESIGN SYSTEM";
 "Decisions" = "Decisions";
+"Denied" = "Denied";
 "Design lead" = "Design lead";
 "Design lead: sketch a meeting recap with clear action owners." = "Design lead: sketch a meeting recap with clear action owners.";
 "Developer" = "Developer";
@@ -54,6 +55,7 @@
 "Fictional conversation. Explore the summary, action items, and transcript." = "Fictional conversation. Explore the summary, action items, and transcript.";
 "Five native building blocks. Gallery controls affect this preview only." = "Five native building blocks. Gallery controls affect this preview only.";
 "Google" = "Google";
+"Granted" = "Granted";
 "I'll sketch that flow. We can review it with three teammates before the next planning session." = "I'll sketch that flow. We can review it with three teammates before the next planning session.";
 "Inter Tight and Instrument Serif are bundled under the SIL Open Font License. System font fallbacks remain available." = "Inter Tight and Instrument Serif are bundled under the SIL Open Font License. System font fallbacks remain available.";
 "Keep the first version focused on summaries and action items." = "Keep the first version focused on summaries and action items.";
@@ -65,9 +67,12 @@
 "Magic Link uses PKCE. Session credentials are stored only in macOS Keychain." = "Magic Link uses PKCE. Session credentials are stored only in macOS Keychain.";
 "Make room for the conversation. Keep what matters." = "Make room for the conversation. Keep what matters.";
 "Meet your meeting companion" = "Meet your meeting companion";
+"Meeting consent is required separately before every recording." = "Meeting consent is required separately before every recording.";
 "Meeting services" = "Meeting services";
 "Meetings" = "Meetings";
 "Meetings, with a little more clarity." = "Meetings, with a little more clarity.";
+"Microphone" = "Microphone";
+"Milyonus could not restart automatically. Quit and reopen the app." = "Milyonus could not restart automatically. Quit and reopen the app.";
 "Neutral" = "Neutral";
 "Next steps" = "Next steps";
 "No documents have been added. Document upload and grounded suggestions are not available in this preview." = "No documents have been added. Document upload and grounded suggestions are not available in this preview.";
@@ -76,10 +81,15 @@
 "Not configured" = "Not configured";
 "Not connected" = "Not connected";
 "Not requested" = "Not requested";
+"Notifications" = "Notifications";
 "Open" = "Open";
 "Open Milyonus" = "Open Milyonus";
+"Open System Settings" = "Open System Settings";
 "Open component gallery" = "Open component gallery";
 "Open sample" = "Open sample";
+"Permission prompts appear only after you choose Request. Audio capture remains off." = "Permission prompts appear only after you choose Request. Audio capture remains off.";
+"Permissions" = "Permissions";
+"Permissions enable app features. Meeting consent is reviewed separately before every recording." = "Permissions enable app features. Meeting consent is reviewed separately before every recording.";
 "Preview preference" = "Preview preference";
 "Primary" = "Primary";
 "Privacy comes first" = "Privacy comes first";
@@ -90,6 +100,9 @@
 "Quit Milyonus" = "Quit Milyonus";
 "Ready example" = "Ready example";
 "Recording is not available in this preview." = "Recording is not available in this preview.";
+"Request" = "Request";
+"Restart Milyonus" = "Restart Milyonus";
+"Restart required" = "Restart required";
 "Review the sample flow with three teammates before the next planning session." = "Review the sample flow with three teammates before the next planning session.";
 "SAMPLE DATA" = "SAMPLE DATA";
 "SAMPLE MEETING" = "SAMPLE MEETING";
@@ -110,6 +123,8 @@
 "Status is always described in text, as well as color." = "Status is always described in text, as well as color.";
 "Summary" = "Summary";
 "Summary + transcript" = "Summary + transcript";
+"System Settings could not be opened." = "System Settings could not be opened.";
+"System audio" = "System audio";
 "Text field" = "Text field";
 "That sign-in method is not available yet." = "That sign-in method is not available yet.";
 "The conversation itself is useful. The hard part is remembering what we agreed to do afterward." = "The conversation itself is useful. The hard part is remembering what we agreed to do afterward.";
