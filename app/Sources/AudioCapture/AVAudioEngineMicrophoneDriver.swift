@@ -27,7 +27,8 @@ final class AVAudioEngineMicrophoneDriver: MicrophoneEngineDriving, @unchecked S
                 throw MicrophoneCaptureError.unsupportedInputFormat
             }
             let converter = try MicrophoneFrameConverter(inputFormat: inputFormat)
-            let bufferSize = AVAudioFrameCount(max(1, inputFormat.sampleRate * 0.1))
+            let requestedFrames = max(1, inputFormat.sampleRate * 0.1)
+            let bufferSize = AVAudioFrameCount(min(4096, requestedFrames))
 
             inputNode.installTap(onBus: 0, bufferSize: bufferSize, format: inputFormat) { buffer, time in
                 let timestamp = time.hostTime == 0
