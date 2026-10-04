@@ -29,6 +29,7 @@ enum Destination: String, CaseIterable, Identifiable {
 
 struct WorkspaceView: View {
     let preferences: AppPreferences
+    let authentication: AuthenticationCoordinator
     @State private var destination = Destination.workspace
     @State private var isShowingSample = false
 
@@ -104,7 +105,7 @@ struct WorkspaceView: View {
                 navigationButton(.settings)
                 HStack(spacing: DesignTokens.Space.small) {
                     Image(systemName: "person.crop.circle")
-                    Text(verbatim: preferences.text("Local preview"))
+                    Text(verbatim: preferences.text(authentication.isSignedIn ? "Connected" : "Local preview"))
                     Spacer()
                     Text("v0.1").font(DesignTokens.Typography.caption)
                 }
@@ -154,7 +155,7 @@ struct WorkspaceView: View {
         case .knowledge:
             KnowledgeView(preferences: preferences, openSettings: { destination = .settings })
         case .settings:
-            PreferencesView(preferences: preferences)
+            PreferencesView(preferences: preferences, authentication: authentication)
         #if DEBUG
             case .gallery:
                 ComponentGallery(preferences: preferences)

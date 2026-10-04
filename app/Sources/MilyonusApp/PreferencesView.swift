@@ -4,6 +4,7 @@ import SwiftUI
 
 struct PreferencesView: View {
     @Bindable var preferences: AppPreferences
+    @Bindable var authentication: AuthenticationCoordinator
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignTokens.Space.large) {
@@ -30,14 +31,21 @@ struct PreferencesView: View {
                 }
             }
             DSCard {
+                AccountSettingsView(preferences: preferences, authentication: authentication)
+            }
+            DSCard {
                 VStack(alignment: .leading, spacing: DesignTokens.Space.large) {
                     SectionHeading(title: preferences.text("Connection status"))
-                    connectionRow("Account", value: "Not connected", symbol: "person.crop.circle")
+                    connectionRow(
+                        "Account",
+                        value: authentication.isSignedIn ? "Connected" : "Not connected",
+                        symbol: "person.crop.circle"
+                    )
                     connectionRow("Meeting services", value: "Not configured", symbol: "waveform")
                     connectionRow("Calendar", value: "Not connected", symbol: "calendar")
                     Text(verbatim: preferences
                         .text(
-                            "Account sign-in, calendar connection, and recording will be available in a future build."
+                            "Calendar connection and recording will be available in a future build."
                         ))
                         .font(DesignTokens.Typography.caption)
                         .foregroundStyle(DesignTokens.Palette.secondary)
@@ -79,6 +87,76 @@ struct PreferencesView: View {
             Spacer()
             DSStatusIndicator(preferences.text(value))
         }
+    }
+}
+
+private struct AccountSettingsView: View {
+    let preferences: AppPreferences
+    @Bindable var authentication: AuthenticationCoordinator
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignTokens.Space.regular) {
+            SectionHeading(title: preferences.text("Account"))
+            switch authentication.state {
+            case .notConfigured:
+                status(
+                    "person.crop.circle.badge.exclamationmark",
+                    "Account sign-in needs the Supabase runtime configuration."
+                )
+            case let .signedIn(userID):
+                status("checkmark.circle.fill", "Signed in securely on this Mac.", tone: DesignTokens.Palette.success)
+                Text(verbatim: preferences.text("Account ID") + ": " + userID.uuidString.lowercased())
+                    .font(DesignTokens.Typography.monospaced)
+                    .foregroundStyle(DesignTokens.Palette.muted)
+                    .textSelection(.enabled)
+                DSButton(preferences.text("Sign out"), variant: .secondary) {
+                    Task { await authentication.signOut() }
+                }
+            case .checkEmail:
+                status("envelope.badge", "Check your email and open the secure sign-in link on this Mac.")
+                DSButton(preferences.text("Send another link"), variant: .secondary) {
+                    Task { await authentication.requestMagicLink() }
+                }
+            case .sendingMagicLink, .signingIn:
+                HStack(spacing: DesignTokens.Space.medium) {
+                    ProgressView().controlSize(.small)
+                    Text(verbatim: preferences.text("Signing in securely..."))
+                        .foregroundStyle(DesignTokens.Palette.secondary)
+                }
+            case .signedOut:
+                DSTextField(preferences.text("Email address"), text: $authentication.email)
+                    .onSubmit { Task { await authentication.requestMagicLink() } }
+                HStack(spacing: DesignTokens.Space.medium) {
+                    DSButton(preferences.text("Email me a sign-in link"), symbol: "envelope") {
+                        Task { await authentication.requestMagicLink() }
+                    }
+                    .disabled(authentication.isBusy)
+                    DSButton(preferences.text("Apple"), symbol: "apple.logo", variant: .secondary) {
+                        Task { await authentication.signIn(using: .apple) }
+                    }
+                    .disabled(authentication.isBusy)
+                    DSButton(preferences.text("Google"), variant: .secondary) {
+                        Task { await authentication.signIn(using: .google) }
+                    }
+                    .disabled(authentication.isBusy)
+                }
+                Text(verbatim: preferences
+                    .text("Magic Link uses PKCE. Session credentials are stored only in macOS Keychain."))
+                    .font(DesignTokens.Typography.caption)
+                    .foregroundStyle(DesignTokens.Palette.secondary)
+            }
+
+            if let errorKey = authentication.errorKey {
+                Label(preferences.text(errorKey), systemImage: "exclamationmark.triangle.fill")
+                    .font(DesignTokens.Typography.caption)
+                    .foregroundStyle(DesignTokens.Palette.warning)
+            }
+        }
+    }
+
+    private func status(_ symbol: String, _ key: String, tone: Color = DesignTokens.Palette.cyan) -> some View {
+        Label(preferences.text(key), systemImage: symbol)
+            .foregroundStyle(tone)
     }
 }
 

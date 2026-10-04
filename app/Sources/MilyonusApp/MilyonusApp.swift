@@ -24,6 +24,7 @@ final class AppPreferences {
 @main
 struct MilyonusApp: App {
     @State private var preferences = AppPreferences()
+    @State private var authentication = AuthenticationCoordinator()
 
     init() {
         let fontsRegistered = BrandFonts.register()
@@ -54,15 +55,19 @@ struct MilyonusApp: App {
 
     var body: some Scene {
         WindowGroup("Milyonus Nottaker", id: "main") {
-            WorkspaceView(preferences: preferences)
+            WorkspaceView(preferences: preferences, authentication: authentication)
                 .preferredColorScheme(.dark)
                 .tint(DesignTokens.Palette.brand)
+                .task { await authentication.restoreSession() }
+                .onOpenURL { url in
+                    Task { await authentication.completeSignIn(callbackURL: url) }
+                }
         }
         .defaultSize(width: DesignTokens.Layout.windowWidth, height: DesignTokens.Layout.windowHeight)
         .windowStyle(.hiddenTitleBar)
 
         Settings {
-            PreferencesView(preferences: preferences)
+            PreferencesView(preferences: preferences, authentication: authentication)
                 .padding(DesignTokens.Space.section)
                 .frame(width: DesignTokens.Layout.settingsWidth)
                 .background(DesignTokens.Palette.canvas)

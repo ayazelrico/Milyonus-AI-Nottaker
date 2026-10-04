@@ -17,6 +17,11 @@ Settings use English by default and offer Turkish. Selection persists on the dev
 string uses the catalog. A debug-only Gallery displays the five base components and their states;
 release builds exclude the Gallery entry point.
 
+Account Settings supports email Magic Link and prepared Apple/Google entry points. Busy, check-email,
+connected, unavailable, and generic failure states remain textual and do not expose provider errors.
+The sidebar identifies a connected account without displaying personal information. Opening a valid
+application callback completes PKCE; all other callback routes are rejected before network access.
+
 ## Accessibility and keyboard behavior
 
 Use native buttons, inputs, and toggles, semantic headings, accessible names for icon controls,
@@ -29,4 +34,4 @@ Before capture, show informed consent explaining both audio channels and cloud p
 permission state and capture state separately. The live overlay is a non-activating NSPanel with
 drag/resize, dismiss/pin/copy, rate-limited cards, and explicit capture status. Overlay behavior,
 shortcuts, and supported full-screen cases require a Phase 2 spec and tests. Do not claim universal
-screen-share invisibility. Post-meeting editing, KB upload, and account sign-in land in their phases.
+screen-share invisibility. Post-meeting editing and KB upload land in their phases.

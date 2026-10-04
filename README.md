@@ -11,17 +11,20 @@ This repository is the **Phase 0 foundation**. It is not a production recording 
 - Shared service contracts, input validation, consent/readiness state transitions, and localization.
 - Native DesignSystem with five base components and a debug-only component Gallery.
 - Fastify backend with public health, fail-closed JWT-protected identity, and metadata-only logging.
+- Native Supabase PKCE authentication foundation with Magic Link, Apple/Google entry points,
+  Keychain-backed sessions, strict callback validation, and optional backend identity confirmation.
 - Dedicated Supabase development schema with workspace RLS, transactional isolation tests, and
   generated backend types. It is not connected to the application yet.
 - Repository-local development tools, reproducible resources, signed local preview packaging, and CI.
 
-Audio capture, STT, AI suggestions, real account sign-in, cloud storage, calendar, and subscriptions
-are upcoming phases. The sample summary is synthetic and is never presented as generated output.
+Audio capture, STT, AI suggestions, cloud storage, calendar, and subscriptions are upcoming phases.
+Authentication still needs one real acceptance sign-in. The sample summary is synthetic and is never
+presented as generated output.
 
 ## Run the native preview
 
 Requirements: macOS 14+, Swift 6 Command Line Tools or Xcode toolchain, and Python 3.9+.
-No Xcode project or provider account is needed for the app preview.
+No Xcode project or provider account is needed for the disconnected app preview.
 
 ```sh
 python3 scripts/generate-localizations.py
@@ -33,6 +36,8 @@ open "build/Milyonus Nottaker.app"
 The default bundle is ad hoc signed. This is suitable for local inspection; it is not notarized and
 has not passed stable microphone/screen permission persistence testing. Use a configured signing
 identity before recording permission acceptance. See [distribution](docs/18-RELEASE-DISTRIBUTION.md).
+To test account sign-in, configure the ignored `app/.env.local` from `app/.env.example`, rebuild the
+bundle, and allowlist `milyonus-nottaker://auth/callback` in the development Supabase project.
 
 ## Run the backend
 
@@ -57,8 +62,8 @@ See [verification report](docs/reports/foundation-verification.md) for actual re
 
 ## Architecture and planning
 
-`app/` contains a SwiftPM package with Shared, DesignSystem, and MilyonusApp. Feature targets are added
-when they own tested behavior. `backend/` contains Fastify/TypeScript services. Provider credentials
+`app/` contains a SwiftPM package with Shared, DesignSystem, Authentication, and MilyonusApp. Feature
+targets are added when they own tested behavior. `backend/` contains Fastify/TypeScript services. Provider credentials
 stay on the backend; future direct STT streaming uses short-lived backend-issued tokens.
 
 Read [AGENTS.md](AGENTS.md), then [Start Here](docs/00-START-HERE.md), [PRD](docs/01-PRD.md),

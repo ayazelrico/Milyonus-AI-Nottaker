@@ -17,5 +17,6 @@ Run `swift build` and `swift test` from this directory. The repository verificat
 lint and format checks. Use the bundled `.app` for native permission and resource verification;
 running a bare SwiftPM executable is not evidence that macOS permission behavior is correct.
 
-The initial workspace displays clearly labeled sample content. No audio capture, authentication,
-provider connection, or cloud persistence is implemented by this foundation.
+The workspace displays clearly labeled sample content. Authentication lives in its own target and
+uses Supabase PKCE plus Keychain. Audio capture, provider connection, and cloud persistence are not
+implemented by this foundation.

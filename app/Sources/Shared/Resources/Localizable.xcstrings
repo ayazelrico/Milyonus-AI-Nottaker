@@ -1872,6 +1872,132 @@
           }
         }
       }
+    },
+    "Account ID": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Account ID" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Hesap kimliği" } }
+      }
+    },
+    "Account sign-in needs the Supabase runtime configuration.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Account sign-in needs the Supabase runtime configuration." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Hesap girişi için Supabase çalışma zamanı yapılandırması gerekiyor." } }
+      }
+    },
+    "Apple": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Apple" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Apple" } }
+      }
+    },
+    "Authentication configuration is invalid.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Authentication configuration is invalid." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Kimlik doğrulama yapılandırması geçersiz." } }
+      }
+    },
+    "Calendar connection and recording will be available in a future build.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Calendar connection and recording will be available in a future build." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Takvim bağlantısı ve kayıt gelecek bir sürümde kullanıma açılacak." } }
+      }
+    },
+    "Check your email and open the secure sign-in link on this Mac.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Check your email and open the secure sign-in link on this Mac." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "E-postanızı kontrol edin ve güvenli giriş bağlantısını bu Mac'te açın." } }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Connected" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Bağlı" } }
+      }
+    },
+    "Email address": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Email address" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "E-posta adresi" } }
+      }
+    },
+    "Email me a sign-in link": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Email me a sign-in link" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Giriş bağlantısını e-postayla gönder" } }
+      }
+    },
+    "Enter a valid email address.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Enter a valid email address." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Geçerli bir e-posta adresi girin." } }
+      }
+    },
+    "Google": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Google" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Google" } }
+      }
+    },
+    "Magic Link uses PKCE. Session credentials are stored only in macOS Keychain.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Magic Link uses PKCE. Session credentials are stored only in macOS Keychain." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Magic Link PKCE kullanır. Oturum bilgileri yalnızca macOS Anahtar Zinciri'nde saklanır." } }
+      }
+    },
+    "Send another link": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Send another link" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Yeni bağlantı gönder" } }
+      }
+    },
+    "Sign out": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Sign out" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Çıkış yap" } }
+      }
+    },
+    "Signed in securely on this Mac.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Signed in securely on this Mac." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Bu Mac'te güvenli şekilde oturum açıldı." } }
+      }
+    },
+    "Signing in securely...": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Signing in securely..." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Güvenli şekilde giriş yapılıyor..." } }
+      }
+    },
+    "That sign-in method is not available yet.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "That sign-in method is not available yet." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Bu giriş yöntemi henüz kullanılamıyor." } }
+      }
+    },
+    "The sign-in link could not be completed. Request a new link.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The sign-in link could not be completed. Request a new link." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Giriş bağlantısı tamamlanamadı. Yeni bir bağlantı isteyin." } }
+      }
+    },
+    "We could not restore your session. Please sign in again.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "We could not restore your session. Please sign in again." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Oturumunuz geri yüklenemedi. Lütfen yeniden giriş yapın." } }
+      }
+    },
+    "We could not send the sign-in link. Please try again.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "We could not send the sign-in link. Please try again." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Giriş bağlantısı gönderilemedi. Lütfen tekrar deneyin." } }
+      }
+    },
+    "We could not sign you out. Please try again.": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "We could not sign you out. Please try again." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Çıkış yapılamadı. Lütfen tekrar deneyin." } }
+      }
     }
   },
   "version": "1.0"

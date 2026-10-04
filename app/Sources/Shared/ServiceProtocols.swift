@@ -43,8 +43,14 @@ public protocol CalendarService: Sendable {
 
 public protocol AuthenticationService: Sendable {
     func currentSession() async throws -> AuthSession?
+    func requestMagicLink(email: String) async throws
+    func completeSignIn(callbackURL: URL) async throws -> AuthSession
     func signIn(using provider: SignInProvider) async throws -> AuthSession
     func signOut() async throws
+}
+
+public protocol AccountIdentityService: Sendable {
+    func identity(for session: AuthSession) async throws -> AccountIdentity
 }
 
 public protocol BillingService: Sendable {

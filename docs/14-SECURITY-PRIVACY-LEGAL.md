@@ -21,10 +21,12 @@ Reconstructed engineering requirements, not a legal opinion or a claim of compli
 
 ## Phase 0 data map
 
-The sample app holds synthetic meeting data in memory and language preferences locally. It does not
-capture audio, authenticate users, upload content, or call AI. The backend processes JWTs only when
-a caller invokes protected endpoints. The dedicated Supabase development project contains an empty
-RLS-protected schema and no real user, meeting, transcript, or credential data.
+The sample app holds synthetic meeting data in memory and language preferences locally. When account
+configuration is present, it can authenticate a user through Supabase and store the session only in
+Keychain. It does not capture audio, upload meeting content, or call AI. The backend processes JWTs
+only when a caller invokes protected endpoints. The dedicated Supabase development project contains
+an RLS-protected schema. A real auth acceptance user must not be treated as consent to store meeting
+or transcript content.
 
 ## Before real user data
 
