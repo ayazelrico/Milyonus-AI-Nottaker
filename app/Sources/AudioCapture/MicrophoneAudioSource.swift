@@ -106,9 +106,7 @@ public actor MicrophoneAudioSource: AudioSource, AudioInputDeviceService, AudioC
     private func validateSelectedDevice() throws {
         let devices = try deviceCatalog.devices()
         guard !devices.isEmpty else { throw MicrophoneCaptureError.noInputDevice }
-        if let selectedDeviceID,
-           !devices.contains(where: { $0.id == selectedDeviceID })
-        {
+        if let selectedDeviceID, !devices.contains(where: { $0.id == selectedDeviceID }) {
             throw MicrophoneCaptureError.deviceUnavailable(selectedDeviceID)
         }
     }
