@@ -7,6 +7,17 @@ public protocol AudioSource: Sendable {
     func stop() async
 }
 
+public protocol AudioInputDeviceService: Sendable {
+    func inputDevices() async throws -> [AudioInputDevice]
+    func selectedInputDeviceID() async -> String?
+    /// Pass `nil` to follow the macOS system default input device.
+    func selectInputDevice(id: String?) async throws
+}
+
+public protocol AudioCaptureMetricsService: Sendable {
+    func captureMetrics() async -> AudioCaptureMetrics
+}
+
 public protocol TranscriptionService: Sendable {
     func availability() async -> ServiceAvailability
     func transcribe(
