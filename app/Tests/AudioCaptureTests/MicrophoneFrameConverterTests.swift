@@ -18,7 +18,8 @@ struct MicrophoneFrameConverterTests {
         }
 
         let converter = try MicrophoneFrameConverter(inputFormat: inputFormat)
-        let frame = try #require(converter.convert(input, timestampNanoseconds: 42))
+        let converted = try converter.convert(input, timestampNanoseconds: 42)
+        let frame = try #require(converted)
 
         #expect(frame.channel == .microphone)
         #expect(frame.timestampNanoseconds == 42)
