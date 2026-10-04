@@ -16,9 +16,11 @@ stream; metering and session limits must be enforced separately before paid usag
 | Shared | Foundation only | Sendable domain types, external-service protocols, localization |
 | DesignSystem | Shared, native UI frameworks | All visual tokens and reusable components |
 | Authentication | Shared, pinned Supabase Auth SDK | PKCE sign-in, Keychain session, backend identity check |
-| MilyonusApp | Shared, DesignSystem, Authentication | Composition root, windows, menu bar, sample workspace, settings |
+| AudioCapture | Shared, Apple audio frameworks | Mic/system sources, conversion, bounded streams, synchronization |
+| Permissions | Shared, native system frameworks | Explicit permission state, requests, settings, restart handling |
+| MilyonusApp | Shared, DesignSystem, Authentication, Permissions | Composition root, windows, menu bar, sample workspace, settings |
 
-Add AudioCapture, Transcription, InsightEngine, KnowledgeBase, PostMeeting, CalendarIntegration,
+Add Transcription, InsightEngine, KnowledgeBase, PostMeeting, CalendarIntegration,
 Persistence, and Billing targets when each receives tested behavior. Do not create
 empty packages and tests merely to simulate implementation. Feature modules may depend on Shared
 and DesignSystem; they cannot import each other. Only MilyonusApp wires implementations together.

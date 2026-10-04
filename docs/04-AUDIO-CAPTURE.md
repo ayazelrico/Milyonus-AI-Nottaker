@@ -1,6 +1,8 @@
 # 04 - Audio capture
 
-Phase 1 specification, reconstructed on 2026-10-02. Not implemented by the foundation.
+Phase 1 specification, reconstructed on 2026-10-02. Microphone capture, system audio capture,
+permissions, and the dual-channel synchronization mixer are implemented. Live consent, STT wiring,
+replay, and real-device acceptance remain in their roadmap tasks.
 
 Use AVAudioEngine for microphone capture and ScreenCaptureKit for system audio on macOS 14.
 Put implementations behind Shared's audio source contract. Exclude this app from system audio.
