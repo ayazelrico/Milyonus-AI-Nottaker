@@ -6,8 +6,9 @@ replay, and real-device acceptance remain in their roadmap tasks.
 
 Use AVAudioEngine for microphone capture and ScreenCaptureKit for system audio on macOS 14.
 Put implementations behind Shared's audio source contract. Exclude this app from system audio.
-Never use newer ScreenCaptureKit microphone APIs unconditionally. Core Audio taps are a separately
-tested macOS 14.2+ experiment (ADR-004), not the baseline implementation.
+Never use newer ScreenCaptureKit microphone APIs unconditionally. The P1-05 spike keeps Core Audio
+process taps as a measurement-triggered macOS 14.2+ experiment (ADR-004), not the baseline
+implementation. P1-14 drift, latency, filtering, or stability evidence must justify starting it.
 
 Negotiate input formats, then emit 16 kHz mono PCM16 with channel identity and monotonic timestamps.
 Preserve a common host clock, bound buffers, and account for dropped frames and discontinuities.
