@@ -9,6 +9,7 @@ let package = Package(
         .library(name: "Shared", targets: ["Shared"]),
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "Authentication", targets: ["Authentication"]),
+        .library(name: "AudioCapture", targets: ["AudioCapture"]),
         .executable(name: "MilyonusApp", targets: ["MilyonusApp"]),
     ],
     dependencies: [
@@ -25,6 +26,7 @@ let package = Package(
             name: "Authentication",
             dependencies: ["Shared", .product(name: "Auth", package: "supabase-swift")]
         ),
+        .target(name: "AudioCapture", dependencies: ["Shared"]),
         .executableTarget(name: "MilyonusApp", dependencies: ["Shared", "DesignSystem", "Authentication"]),
         .testTarget(name: "SharedTests", dependencies: ["Shared"]),
         .testTarget(name: "DesignSystemTests", dependencies: ["DesignSystem"]),
@@ -32,6 +34,7 @@ let package = Package(
             name: "AuthenticationTests",
             dependencies: ["Authentication", "Shared", .product(name: "Auth", package: "supabase-swift")]
         ),
+        .testTarget(name: "AudioCaptureTests", dependencies: ["AudioCapture", "Shared"]),
     ],
     swiftLanguageModes: [.v6]
 )

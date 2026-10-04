@@ -5,6 +5,36 @@ public enum AudioChannel: String, Sendable, Codable, CaseIterable {
     case system
 }
 
+public struct AudioInputDevice: Sendable, Equatable, Identifiable {
+    public let id: String
+    public let name: String
+    public let isDefault: Bool
+
+    public init(id: String, name: String, isDefault: Bool) {
+        self.id = id
+        self.name = name
+        self.isDefault = isDefault
+    }
+}
+
+public struct AudioCaptureMetrics: Sendable, Equatable {
+    public let deliveredFrameCount: UInt64
+    public let droppedFrameCount: UInt64
+    public let restartCount: UInt64
+
+    public init(deliveredFrameCount: UInt64, droppedFrameCount: UInt64, restartCount: UInt64) {
+        self.deliveredFrameCount = deliveredFrameCount
+        self.droppedFrameCount = droppedFrameCount
+        self.restartCount = restartCount
+    }
+
+    public static let zero = AudioCaptureMetrics(
+        deliveredFrameCount: 0,
+        droppedFrameCount: 0,
+        restartCount: 0
+    )
+}
+
 /// Mono, signed PCM16, little-endian audio at 16 kHz. Timestamps use a shared monotonic clock.
 public struct AudioFrame: Sendable, Equatable {
     public static let sampleRate = 16000
