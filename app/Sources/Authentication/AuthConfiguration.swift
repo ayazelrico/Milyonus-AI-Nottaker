@@ -59,14 +59,13 @@ public struct AuthConfiguration: Sendable, CustomStringConvertible {
         }
 
         let backendURL: URL?
-        if let value = configurationValue(
+        let backendValue = configurationValue(
             environmentName: "BACKEND_BASE_URL",
             bundleName: "MilyonusBackendBaseURL",
             environment: environment,
             bundleValues: bundleValues
-        ),
-            !value.isEmpty
-        {
+        )
+        if let value = backendValue, !value.isEmpty {
             guard let parsed = URL(string: value) else { throw AuthConfigurationError.invalidBackendURL }
             backendURL = parsed
         } else {

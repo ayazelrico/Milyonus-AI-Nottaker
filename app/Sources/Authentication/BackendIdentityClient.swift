@@ -10,12 +10,12 @@ public enum BackendIdentityError: Error, Sendable, Equatable {
 public actor BackendIdentityClient: AccountIdentityService {
     public typealias Fetch = @Sendable (URLRequest) async throws -> (Data, URLResponse)
 
-    private struct IdentityResponse: Decodable {
-        struct User: Decodable {
-            let id: UUID
-        }
+    private struct IdentityUser: Decodable {
+        let id: UUID
+    }
 
-        let user: User
+    private struct IdentityResponse: Decodable {
+        let user: IdentityUser
     }
 
     private let endpoint: URL

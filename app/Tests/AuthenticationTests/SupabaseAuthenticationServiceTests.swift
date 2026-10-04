@@ -27,7 +27,7 @@ struct SupabaseAuthenticationServiceTests {
         let json = try #require(JSONSerialization.jsonObject(with: body) as? [String: Any])
         #expect(json["email"] as? String == "person@example.com")
         #expect(json["create_user"] as? Bool == true)
-        #expect(json["code_challenge"] as? String != nil)
+        #expect(json["code_challenge"] is String)
         #expect(json["code_challenge_method"] as? String == "s256")
     }
 
