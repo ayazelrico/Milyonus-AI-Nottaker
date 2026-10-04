@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 public enum DSButtonVariant: Sendable {
@@ -46,12 +47,12 @@ private struct BrandedButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(DesignTokens.Typography.bodyStrong)
-            .foregroundStyle(variant == .primary ? DesignTokens.Palette.canvas : DesignTokens.Palette.foreground)
+            .foregroundStyle(DesignTokens.Palette.foreground)
             .padding(.horizontal, DesignTokens.Space.regular)
             .frame(minHeight: DesignTokens.Layout.controlHeight)
             .background(background, in: Capsule())
             .overlay {
-                Capsule().strokeBorder(variant == .primary ? .clear : DesignTokens.Palette.border)
+                Capsule().strokeBorder(variant == .primary ? DesignTokens.Palette.brand : DesignTokens.Palette.border)
             }
             .opacity(isEnabled ? (configuration.isPressed ? 0.72 : 1) : 0.45)
             .animation(
@@ -62,10 +63,34 @@ private struct BrandedButtonStyle: ButtonStyle {
 
     private var background: Color {
         switch variant {
-        case .primary: DesignTokens.Palette.foreground
+        case .primary: DesignTokens.Palette.brand
         case .secondary: DesignTokens.Palette.elevated
         case .quiet: .clear
         }
+    }
+}
+
+public struct MilyonusWordmark: View {
+    public init() {}
+
+    public var body: some View {
+        Group {
+            if let url = BrandFonts.wordmarkURL, let image = NSImage(contentsOf: url) {
+                Image(nsImage: image)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                Text(verbatim: "Milyonus")
+                    .font(DesignTokens.Typography.wordmark)
+                    .foregroundStyle(DesignTokens.Palette.foreground)
+            }
+        }
+        .frame(
+            width: DesignTokens.Layout.wordmarkWidth,
+            height: DesignTokens.Layout.wordmarkHeight
+        )
+        .clipped()
+        .accessibilityLabel("Milyonus")
     }
 }
 
@@ -143,7 +168,7 @@ public struct DSStatusIndicator: View {
     private var color: Color {
         switch tone {
         case .neutral: DesignTokens.Palette.muted
-        case .sample: DesignTokens.Palette.cyan
+        case .sample: DesignTokens.Palette.brand
         case .ready: DesignTokens.Palette.success
         case .attention: DesignTokens.Palette.warning
         }

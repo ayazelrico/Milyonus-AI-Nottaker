@@ -10,6 +10,14 @@ public enum BrandFonts {
         resources.bundleURL
     }
 
+    public static var wordmarkIsAvailable: Bool {
+        wordmarkURL != nil
+    }
+
+    public static var wordmarkURL: URL? {
+        resources.url(forResource: "MilyonusZen", withExtension: "png")
+    }
+
     @discardableResult
     public static func register() -> Bool {
         for filename in ["InterTight", "InstrumentSerif-Italic"] {

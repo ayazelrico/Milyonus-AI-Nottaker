@@ -39,10 +39,12 @@ struct MilyonusApp: App {
             let englishLoaded = AppStrings.text("Workspace", language: .english) == "Workspace"
             let turkishLoaded = AppStrings.text("Workspace", language: .turkish) == "Çalışma alanı"
                 && AppStrings.text("Settings", language: .turkish) == "Ayarlar"
-            let valid = fontsRegistered && embeddedResources && englishLoaded && turkishLoaded
+            let valid = fontsRegistered && BrandFonts.wordmarkIsAvailable
+                && embeddedResources && englishLoaded && turkishLoaded
             print(valid
-                ? "Bundle smoke test: English, Turkish, and both brand fonts verified."
-                : "Bundle smoke test failed: fonts=\(fontsRegistered), embedded=\(embeddedResources), "
+                ? "Bundle smoke test: English, Turkish, brand fonts, and wordmark verified."
+                : "Bundle smoke test failed: fonts=\(fontsRegistered), "
+                + "wordmark=\(BrandFonts.wordmarkIsAvailable), embedded=\(embeddedResources), "
                 + "english=\(englishLoaded), turkish=\(turkishLoaded).")
             if !embeddedResources {
                 print("Bundle smoke paths: main=\(Bundle.main.bundleURL.path), "

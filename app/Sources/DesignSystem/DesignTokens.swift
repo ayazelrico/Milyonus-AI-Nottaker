@@ -6,18 +6,19 @@ public enum DesignTokens {
         public static let brandHex: UInt32 = 0x2E6BFF
         public static let cyanHex: UInt32 = 0x5CC8FF
         public static let canvas = Color.black
-        public static let sidebar = color(0x08090C)
-        public static let surface = color(0x101216)
-        public static let elevated = color(0x181C24)
+        public static let sidebar = Color.black
+        public static let surface = color(0x181818)
+        public static let elevated = color(0x202020)
         public static let brand = color(brandHex)
         public static let cyan = color(cyanHex)
-        public static let foreground = Color.white
-        public static let secondary = color(0xB4BAC6)
-        public static let muted = color(0x929BAB)
-        public static let border = Color.white.opacity(0.12)
-        public static let activeFill = color(0x111F3E)
-        public static let heroTop = color(0x102753)
-        public static let heroBottom = color(0x070C17)
+        public static let foreground = color(0xF4F4F2)
+        public static let secondary = color(0xA8A8A5)
+        public static let muted = color(0x91918E)
+        public static let border = color(0x353535)
+        public static let divider = color(0x242424)
+        public static let activeFill = color(0x071124)
+        public static let heroTop = color(0x181818)
+        public static let heroBottom = color(0x131313)
         public static let success = color(0x22C55E)
         public static let warning = color(0xF5A524)
 
@@ -33,16 +34,16 @@ public enum DesignTokens {
     }
 
     public enum Typography {
-        public static let display = sans(size: 38)
-        public static let displayAccent = serif(size: 40)
-        public static let title = sans(size: 28, weight: .medium)
-        public static let heading = sans(size: 18, weight: .semibold)
-        public static let cardTitle = serif(size: 26)
-        public static let body = sans(size: 14)
-        public static let bodyStrong = sans(size: 14, weight: .medium)
-        public static let caption = sans(size: 12)
-        public static let eyebrow = sans(size: 10, weight: .semibold)
-        public static let wordmark = sans(size: 21, weight: .semibold)
+        public static let display = sans(size: 40, weight: .medium)
+        public static let displayAccent = serif(size: 42)
+        public static let title = sans(size: 32, weight: .medium)
+        public static let heading = sans(size: 17, weight: .medium)
+        public static let cardTitle = serif(size: 28)
+        public static let body = sans(size: 15)
+        public static let bodyStrong = sans(size: 15, weight: .medium)
+        public static let caption = sans(size: 13)
+        public static let eyebrow = sans(size: 11, weight: .medium)
+        public static let wordmark = serif(size: 30)
         public static let monospaced = Font.system(size: 12, design: .monospaced)
         public static let navigationSymbol = Font.system(size: 16)
         public static let brandSymbol = Font.system(size: 28, weight: .medium)
@@ -74,19 +75,19 @@ public enum DesignTokens {
     }
 
     public enum Shape {
-        public static let control: CGFloat = 10
-        public static let card: CGFloat = 20
-        public static let hero: CGFloat = 24
+        public static let control: CGFloat = 12
+        public static let card: CGFloat = 18
+        public static let hero: CGFloat = 18
     }
 
     public enum Layout {
-        public static let sidebar: CGFloat = 224
-        public static let windowWidth: CGFloat = 1180
-        public static let windowHeight: CGFloat = 790
-        public static let minimumWidth: CGFloat = 1000
-        public static let minimumHeight: CGFloat = 690
-        public static let contentWidth: CGFloat = 1000
-        public static let controlHeight: CGFloat = 36
+        public static let sidebar: CGFloat = 236
+        public static let windowWidth: CGFloat = 1280
+        public static let windowHeight: CGFloat = 820
+        public static let minimumWidth: CGFloat = 1040
+        public static let minimumHeight: CGFloat = 700
+        public static let contentWidth: CGFloat = 1080
+        public static let controlHeight: CGFloat = 38
         public static let heroHeight: CGFloat = 252
         public static let heroArtworkWidth: CGFloat = 250
         public static let sectionIcon: CGFloat = 38
@@ -94,6 +95,8 @@ public enum DesignTokens {
         public static let tinyIcon: CGFloat = 8
         public static let symbol: CGFloat = 16
         public static let wordmarkIcon: CGFloat = 28
+        public static let wordmarkWidth: CGFloat = 166
+        public static let wordmarkHeight: CGFloat = 44
         public static let transcriptTime: CGFloat = 56
         public static let meetingAside: CGFloat = 228
         public static let settingsWidth: CGFloat = 600

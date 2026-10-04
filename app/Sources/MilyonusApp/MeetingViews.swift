@@ -26,7 +26,7 @@ struct MeetingLibraryView: View {
                     HStack(alignment: .center, spacing: DesignTokens.Space.large) {
                         Image(systemName: "text.bubble")
                             .font(DesignTokens.Typography.brandSymbol)
-                            .foregroundStyle(DesignTokens.Palette.cyan)
+                            .foregroundStyle(DesignTokens.Palette.brand)
                             .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: DesignTokens.Space.medium) {
                             DSStatusIndicator(preferences.text("Sample meeting"), tone: .sample)
@@ -157,7 +157,7 @@ struct SampleMeetingView: View {
                         VStack(alignment: .leading, spacing: DesignTokens.Space.small) {
                             Text(verbatim: preferences.text(excerpt.speaker))
                                 .font(DesignTokens.Typography.bodyStrong)
-                                .foregroundStyle(DesignTokens.Palette.cyan)
+                                .foregroundStyle(DesignTokens.Palette.brand)
                             Text(verbatim: preferences.text(excerpt.text))
                                 .foregroundStyle(DesignTokens.Palette.secondary)
                                 .lineSpacing(DesignTokens.Layout.lineHeight)
@@ -172,7 +172,7 @@ struct SampleMeetingView: View {
     private func detailRow(symbol: String, text: String) -> some View {
         HStack(alignment: .top, spacing: DesignTokens.Space.medium) {
             Image(systemName: symbol)
-                .foregroundStyle(DesignTokens.Palette.cyan)
+                .foregroundStyle(DesignTokens.Palette.brand)
                 .accessibilityHidden(true)
             Text(verbatim: preferences.text(text))
                 .foregroundStyle(DesignTokens.Palette.secondary)

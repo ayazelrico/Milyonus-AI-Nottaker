@@ -5,7 +5,6 @@ struct OverviewView: View {
     let preferences: AppPreferences
     let openSample: () -> Void
     let openSettings: () -> Void
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignTokens.Space.section) {
@@ -28,7 +27,7 @@ struct OverviewView: View {
             }
             HStack(spacing: DesignTokens.Space.small) {
                 Image(systemName: "shield.lefthalf.filled")
-                    .foregroundStyle(DesignTokens.Palette.cyan)
+                    .foregroundStyle(DesignTokens.Palette.brand)
                     .accessibilityHidden(true)
                 Text(verbatim: preferences
                     .text("You stay in control. Recording will always require your action and consent."))
@@ -62,18 +61,10 @@ struct OverviewView: View {
         }
         .padding(DesignTokens.Space.section)
         .frame(minHeight: DesignTokens.Layout.heroHeight)
-        .background {
-            RoundedRectangle(cornerRadius: DesignTokens.Shape.hero)
-                .fill(reduceTransparency
-                    ? AnyShapeStyle(DesignTokens.Palette.heroBottom)
-                    : AnyShapeStyle(LinearGradient(
-                        colors: [DesignTokens.Palette.heroTop, DesignTokens.Palette.heroBottom],
-                        startPoint: .topTrailing, endPoint: .bottomLeading
-                    )))
-        }
+        .background(DesignTokens.Palette.heroBottom, in: RoundedRectangle(cornerRadius: DesignTokens.Shape.hero))
         .overlay {
             RoundedRectangle(cornerRadius: DesignTokens.Shape.hero)
-                .strokeBorder(DesignTokens.Palette.brand.opacity(0.35))
+                .strokeBorder(DesignTokens.Palette.border)
         }
     }
 
@@ -81,12 +72,12 @@ struct OverviewView: View {
         ZStack {
             Circle().stroke(DesignTokens.Palette.brand.opacity(0.18))
                 .frame(width: DesignTokens.Layout.heroArtworkWidth, height: DesignTokens.Layout.heroArtworkWidth)
-            Circle().stroke(DesignTokens.Palette.cyan.opacity(0.15))
+            Circle().stroke(DesignTokens.Palette.brand.opacity(0.2))
                 .frame(width: DesignTokens.Layout.glyphRing, height: DesignTokens.Layout.glyphRing)
             HStack(spacing: DesignTokens.Layout.waveformGap) {
                 ForEach(Array(DesignTokens.Layout.waveformHeights.enumerated()), id: \.offset) { index, height in
                     Capsule()
-                        .fill(index.isMultiple(of: 3) ? DesignTokens.Palette.cyan : DesignTokens.Palette.brand)
+                        .fill(index.isMultiple(of: 3) ? DesignTokens.Palette.foreground : DesignTokens.Palette.brand)
                         .frame(width: DesignTokens.Layout.waveformBar, height: height)
                 }
             }
@@ -100,7 +91,7 @@ struct OverviewView: View {
             VStack(alignment: .leading, spacing: DesignTokens.Space.regular) {
                 HStack {
                     Image(systemName: "text.bubble")
-                        .foregroundStyle(DesignTokens.Palette.cyan)
+                        .foregroundStyle(DesignTokens.Palette.brand)
                         .font(DesignTokens.Typography.heading)
                         .accessibilityHidden(true)
                     Spacer()
@@ -164,7 +155,7 @@ struct PageHeading: View {
             Text(verbatim: eyebrow)
                 .font(DesignTokens.Typography.eyebrow)
                 .tracking(DesignTokens.Layout.letterSpacing)
-                .foregroundStyle(DesignTokens.Palette.cyan)
+                .foregroundStyle(DesignTokens.Palette.muted)
             Text(verbatim: title)
                 .font(DesignTokens.Typography.title)
                 .foregroundStyle(DesignTokens.Palette.foreground)

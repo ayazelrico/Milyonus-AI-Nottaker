@@ -241,7 +241,7 @@ private struct AccountSettingsView: View {
         }
     }
 
-    private func status(_ symbol: String, _ key: String, tone: Color = DesignTokens.Palette.cyan) -> some View {
+    private func status(_ symbol: String, _ key: String, tone: Color = DesignTokens.Palette.brand) -> some View {
         Label(preferences.text(key), systemImage: symbol)
             .foregroundStyle(tone)
     }
@@ -262,7 +262,7 @@ struct KnowledgeView: View {
                 VStack(alignment: .center, spacing: DesignTokens.Space.large) {
                     Image(systemName: "books.vertical")
                         .font(DesignTokens.Typography.illustrationSymbol)
-                        .foregroundStyle(DesignTokens.Palette.cyan)
+                        .foregroundStyle(DesignTokens.Palette.brand)
                         .accessibilityHidden(true)
                     VStack(spacing: DesignTokens.Space.medium) {
                         Text(verbatim: preferences.text("A fresh page."))
@@ -287,7 +287,7 @@ struct KnowledgeView: View {
                 .frame(maxWidth: .infinity, minHeight: DesignTokens.Layout.emptyHeight)
             }
             HStack(alignment: .top, spacing: DesignTokens.Space.medium) {
-                Image(systemName: "lock.shield").foregroundStyle(DesignTokens.Palette.cyan)
+                Image(systemName: "lock.shield").foregroundStyle(DesignTokens.Palette.brand)
                 Text(verbatim: preferences
                     .text(
                         "Your documents will only be used after you choose to add them. "
