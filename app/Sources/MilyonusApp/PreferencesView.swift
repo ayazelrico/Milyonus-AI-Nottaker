@@ -5,6 +5,7 @@ import SwiftUI
 struct PreferencesView: View {
     @Bindable var preferences: AppPreferences
     @Bindable var authentication: AuthenticationCoordinator
+    @Bindable var permissions: PermissionCoordinator
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignTokens.Space.large) {
@@ -34,6 +35,9 @@ struct PreferencesView: View {
                 AccountSettingsView(preferences: preferences, authentication: authentication)
             }
             DSCard {
+                PermissionSettingsView(preferences: preferences, permissions: permissions)
+            }
+            DSCard {
                 VStack(alignment: .leading, spacing: DesignTokens.Space.large) {
                     SectionHeading(title: preferences.text("Connection status"))
                     connectionRow(
@@ -41,7 +45,12 @@ struct PreferencesView: View {
                         value: authentication.isSignedIn ? "Connected" : "Not connected",
                         symbol: "person.crop.circle"
                     )
-                    connectionRow("Meeting services", value: "Not configured", symbol: "waveform")
+                    connectionRow(
+                        "Meeting services",
+                        value: permissions.snapshot.microphone == .granted
+                            && permissions.snapshot.systemAudio == .granted ? "Connected" : "Not configured",
+                        symbol: "waveform"
+                    )
                     connectionRow("Calendar", value: "Not connected", symbol: "calendar")
                     Text(verbatim: preferences
                         .text(
@@ -59,14 +68,13 @@ struct PreferencesView: View {
                         .foregroundStyle(DesignTokens.Palette.foreground)
                     Text(verbatim: preferences
                         .text(
-                            "This preview does not capture your microphone or system audio, request recording permissions, "
-                                + "or send meeting data to a server."
+                            "Permission prompts appear only after you choose Request. Audio capture remains off."
                         ))
                         .foregroundStyle(DesignTokens.Palette.secondary)
                         .lineSpacing(DesignTokens.Layout.lineHeight)
                     Text(verbatim: preferences
                         .text(
-                            "Before recording becomes available, you will be able to review consent and permissions."
+                            "Meeting consent is required separately before every recording."
                         ))
                         .font(DesignTokens.Typography.caption)
                         .foregroundStyle(DesignTokens.Palette.muted)
@@ -86,6 +94,85 @@ struct PreferencesView: View {
             Text(verbatim: preferences.text(title))
             Spacer()
             DSStatusIndicator(preferences.text(value))
+        }
+    }
+}
+
+private struct PermissionSettingsView: View {
+    let preferences: AppPreferences
+    @Bindable var permissions: PermissionCoordinator
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignTokens.Space.regular) {
+            SectionHeading(title: preferences.text("Permissions"))
+            permissionRow(.microphone, title: "Microphone", symbol: "mic")
+            permissionRow(.systemAudio, title: "System audio", symbol: "rectangle.on.rectangle")
+            permissionRow(.notifications, title: "Notifications", symbol: "bell")
+            Text(verbatim: preferences
+                .text(
+                    "Permissions enable app features. Meeting consent is reviewed separately before every recording."
+                ))
+                .font(DesignTokens.Typography.caption)
+                .foregroundStyle(DesignTokens.Palette.secondary)
+                .lineSpacing(DesignTokens.Layout.lineHeight)
+            if let errorKey = permissions.errorKey {
+                Label(preferences.text(errorKey), systemImage: "exclamationmark.triangle.fill")
+                    .font(DesignTokens.Typography.caption)
+                    .foregroundStyle(DesignTokens.Palette.warning)
+            }
+        }
+    }
+
+    private func permissionRow(_ permission: AppPermission, title: String, symbol: String) -> some View {
+        let status = permissions.snapshot[permission]
+        return HStack(spacing: DesignTokens.Space.medium) {
+            Image(systemName: symbol)
+                .foregroundStyle(DesignTokens.Palette.muted)
+                .frame(width: DesignTokens.Layout.symbol)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: DesignTokens.Space.tiny) {
+                Text(verbatim: preferences.text(title))
+                Text(verbatim: preferences.text(statusKey(status)))
+                    .font(DesignTokens.Typography.caption)
+                    .foregroundStyle(status == .granted ? DesignTokens.Palette.success : DesignTokens.Palette.muted)
+            }
+            Spacer()
+            action(permission, status: status)
+        }
+    }
+
+    @ViewBuilder
+    private func action(_ permission: AppPermission, status: AppPermissionStatus) -> some View {
+        if permissions.pendingPermission == permission {
+            ProgressView().controlSize(.small)
+        } else {
+            switch status {
+            case .notDetermined:
+                DSButton(preferences.text("Request"), variant: .secondary) {
+                    Task { await permissions.request(permission) }
+                }
+            case .denied:
+                DSButton(preferences.text("Open System Settings"), variant: .secondary) {
+                    Task { await permissions.openSystemSettings(for: permission) }
+                }
+            case .restartRequired:
+                DSButton(preferences.text("Restart Milyonus"), variant: .secondary) {
+                    Task { await permissions.restartApplication() }
+                }
+            case .granted:
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(DesignTokens.Palette.success)
+                    .accessibilityLabel(preferences.text("Granted"))
+            }
+        }
+    }
+
+    private func statusKey(_ status: AppPermissionStatus) -> String {
+        switch status {
+        case .notDetermined: "Not requested"
+        case .granted: "Granted"
+        case .denied: "Denied"
+        case .restartRequired: "Restart required"
         }
     }
 }

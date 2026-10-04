@@ -38,6 +38,7 @@
 "Could we start with a short recap, then make each action and its owner easy to scan?" = "Kısa bir özetle başlayıp her görevi ve sorumlusunu kolayca görülebilir yapabilir miyiz?";
 "DESIGN SYSTEM" = "TASARIM SİSTEMİ";
 "Decisions" = "Kararlar";
+"Denied" = "Reddedildi";
 "Design lead" = "Tasarım sorumlusu";
 "Design lead: sketch a meeting recap with clear action owners." = "Tasarım sorumlusu: görev sahiplerini net gösteren bir toplantı özeti taslağı hazırla.";
 "Developer" = "Geliştirici";
@@ -54,6 +55,7 @@
 "Fictional conversation. Explore the summary, action items, and transcript." = "Kurgusal bir görüşme. Özeti, görevleri ve dökümü keşfedin.";
 "Five native building blocks. Gallery controls affect this preview only." = "Beş yerel bileşen. Galeri kontrolleri yalnızca bu önizlemeyi etkiler.";
 "Google" = "Google";
+"Granted" = "İzin verildi";
 "I'll sketch that flow. We can review it with three teammates before the next planning session." = "Bu akışı taslak olarak çizeceğim. Bir sonraki planlamadan önce üç ekip arkadaşıyla inceleyebiliriz.";
 "Inter Tight and Instrument Serif are bundled under the SIL Open Font License. System font fallbacks remain available." = "Inter Tight ve Instrument Serif, SIL Open Font License kapsamında pakete dahildir. Sistem yazı tipi alternatifleri kullanılabilir.";
 "Keep the first version focused on summaries and action items." = "İlk sürümü özetler ve görevlere odakla.";
@@ -65,9 +67,12 @@
 "Magic Link uses PKCE. Session credentials are stored only in macOS Keychain." = "Magic Link PKCE kullanır. Oturum bilgileri yalnızca macOS Anahtar Zinciri'nde saklanır.";
 "Make room for the conversation. Keep what matters." = "Görüşmeye alan açın. Önemli olanı saklayın.";
 "Meet your meeting companion" = "Toplantı yardımcınızla tanışın";
+"Meeting consent is required separately before every recording." = "Her kayıttan önce ayrıca toplantı onayı gerekir.";
 "Meeting services" = "Toplantı hizmetleri";
 "Meetings" = "Toplantılar";
 "Meetings, with a little more clarity." = "Toplantılarınız artık daha net.";
+"Microphone" = "Mikrofon";
+"Milyonus could not restart automatically. Quit and reopen the app." = "Milyonus otomatik olarak yeniden başlatılamadı. Uygulamadan çıkıp yeniden açın.";
 "Neutral" = "Nötr";
 "Next steps" = "Sonraki adımlar";
 "No documents have been added. Document upload and grounded suggestions are not available in this preview." = "Henüz belge eklenmedi. Belge yükleme ve kaynaklara dayalı öneriler bu önizlemede kullanılamıyor.";
@@ -76,10 +81,15 @@
 "Not configured" = "Yapılandırılmadı";
 "Not connected" = "Bağlı değil";
 "Not requested" = "İstenmedi";
+"Notifications" = "Bildirimler";
 "Open" = "Aç";
 "Open Milyonus" = "Milyonus uygulamasını aç";
+"Open System Settings" = "Sistem Ayarları'nı aç";
 "Open component gallery" = "Bileşen galerisini aç";
 "Open sample" = "Örneği aç";
+"Permission prompts appear only after you choose Request. Audio capture remains off." = "İzin istemleri yalnızca İzin iste seçeneğine bastığınızda görünür. Ses yakalama kapalı kalır.";
+"Permissions" = "İzinler";
+"Permissions enable app features. Meeting consent is reviewed separately before every recording." = "İzinler uygulama özelliklerini etkinleştirir. Toplantı onayı her kayıttan önce ayrıca değerlendirilir.";
 "Preview preference" = "Önizleme tercihi";
 "Primary" = "Birincil";
 "Privacy comes first" = "Önce gizlilik";
@@ -90,6 +100,9 @@
 "Quit Milyonus" = "Milyonus uygulamasından çık";
 "Ready example" = "Hazır örneği";
 "Recording is not available in this preview." = "Kayıt bu önizlemede kullanılamıyor.";
+"Request" = "İzin iste";
+"Restart Milyonus" = "Milyonus'u yeniden başlat";
+"Restart required" = "Yeniden başlatma gerekiyor";
 "Review the sample flow with three teammates before the next planning session." = "Bir sonraki planlamadan önce örnek akışı üç ekip arkadaşıyla incele.";
 "SAMPLE DATA" = "ÖRNEK VERİ";
 "SAMPLE MEETING" = "ÖRNEK TOPLANTI";
@@ -110,6 +123,8 @@
 "Status is always described in text, as well as color." = "Durum her zaman rengin yanı sıra metinle de belirtilir.";
 "Summary" = "Özet";
 "Summary + transcript" = "Özet + döküm";
+"System Settings could not be opened." = "Sistem Ayarları açılamadı.";
+"System audio" = "Sistem sesi";
 "Text field" = "Metin alanı";
 "That sign-in method is not available yet." = "Bu giriş yöntemi henüz kullanılamıyor.";
 "The conversation itself is useful. The hard part is remembering what we agreed to do afterward." = "Görüşmenin kendisi faydalı. Asıl zor olan, sonrasında ne yapmaya karar verdiğimizi hatırlamak.";

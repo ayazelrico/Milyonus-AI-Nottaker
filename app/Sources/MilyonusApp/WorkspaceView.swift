@@ -30,6 +30,7 @@ enum Destination: String, CaseIterable, Identifiable {
 struct WorkspaceView: View {
     let preferences: AppPreferences
     let authentication: AuthenticationCoordinator
+    let permissions: PermissionCoordinator
     @State private var destination = Destination.workspace
     @State private var isShowingSample = false
 
@@ -155,7 +156,11 @@ struct WorkspaceView: View {
         case .knowledge:
             KnowledgeView(preferences: preferences, openSettings: { destination = .settings })
         case .settings:
-            PreferencesView(preferences: preferences, authentication: authentication)
+            PreferencesView(
+                preferences: preferences,
+                authentication: authentication,
+                permissions: permissions
+            )
         #if DEBUG
             case .gallery:
                 ComponentGallery(preferences: preferences)

@@ -25,6 +25,7 @@ final class AppPreferences {
 struct MilyonusApp: App {
     @State private var preferences = AppPreferences()
     @State private var authentication = AuthenticationCoordinator()
+    @State private var permissions = PermissionCoordinator()
 
     init() {
         let fontsRegistered = BrandFonts.register()
@@ -55,23 +56,35 @@ struct MilyonusApp: App {
 
     var body: some Scene {
         WindowGroup("Milyonus Nottaker", id: "main") {
-            WorkspaceView(preferences: preferences, authentication: authentication)
-                .preferredColorScheme(.dark)
-                .tint(DesignTokens.Palette.brand)
-                .task { await authentication.restoreSession() }
-                .onOpenURL { url in
-                    Task { await authentication.completeSignIn(callbackURL: url) }
-                }
+            WorkspaceView(
+                preferences: preferences,
+                authentication: authentication,
+                permissions: permissions
+            )
+            .preferredColorScheme(.dark)
+            .tint(DesignTokens.Palette.brand)
+            .task { await authentication.restoreSession() }
+            .task { await permissions.refresh() }
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                Task { await permissions.refresh() }
+            }
+            .onOpenURL { url in
+                Task { await authentication.completeSignIn(callbackURL: url) }
+            }
         }
         .defaultSize(width: DesignTokens.Layout.windowWidth, height: DesignTokens.Layout.windowHeight)
         .windowStyle(.hiddenTitleBar)
 
         Settings {
-            PreferencesView(preferences: preferences, authentication: authentication)
-                .padding(DesignTokens.Space.section)
-                .frame(width: DesignTokens.Layout.settingsWidth)
-                .background(DesignTokens.Palette.canvas)
-                .preferredColorScheme(.dark)
+            PreferencesView(
+                preferences: preferences,
+                authentication: authentication,
+                permissions: permissions
+            )
+            .padding(DesignTokens.Space.section)
+            .frame(width: DesignTokens.Layout.settingsWidth)
+            .background(DesignTokens.Palette.canvas)
+            .preferredColorScheme(.dark)
         }
 
         MenuBarExtra("Milyonus Nottaker", systemImage: "waveform") {
