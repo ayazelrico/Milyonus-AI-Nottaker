@@ -34,7 +34,7 @@ Acceptance: 30-minute meeting captured on both channels, live EN/TR transcript, 
 - [ ] P1-01 Mic capture (AVAudioEngine) behind `AudioSource`, 16 kHz mono PCM16, device selection + hot-swap
 - [ ] P1-02 Permissions manager (mic, screen/system audio, notifications) with deep links and restart-required handling
 - [ ] P1-03 System audio via ScreenCaptureKit (all apps except self), downmix/resample, per-app filter
-- [ ] P1-04 Mixer/timestamps: shared host clock, frame contract, drift monitor, bounded buffers
+- [x] P1-04 Mixer/timestamps: shared host clock, frame contract, drift monitor, bounded buffers
 - [ ] P1-05 Spike: Core Audio process tap vs SCK; write findings in ADR-004 update
 - [ ] P1-06 `ReplaySource` + fixtures (EN, TR) + Debug "Run replay" menu
 - [ ] P1-07 Backend `POST /v1/stt/token` with Deepgram adapter (short-lived tokens), entitlement stub

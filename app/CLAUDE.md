@@ -18,5 +18,5 @@ lint and format checks. Use the bundled `.app` for native permission and resourc
 running a bare SwiftPM executable is not evidence that macOS permission behavior is correct.
 
 The workspace displays clearly labeled sample content. Authentication lives in its own target and
-uses Supabase PKCE plus Keychain. Audio capture, provider connection, and cloud persistence are not
-implemented by this foundation.
+uses Supabase PKCE plus Keychain. AudioCapture and Permissions own tested native services but are not
+yet wired to a live meeting UI. Provider connection and cloud persistence are not implemented.

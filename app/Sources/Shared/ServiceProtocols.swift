@@ -18,6 +18,12 @@ public protocol AudioCaptureMetricsService: Sendable {
     func captureMetrics() async -> AudioCaptureMetrics
 }
 
+public protocol AudioMixerService: Sendable {
+    func start() async throws -> AsyncThrowingStream<AudioFrame, Error>
+    func stop() async
+    func synchronizationMetrics() async -> AudioSynchronizationMetrics
+}
+
 public enum AppPermission: String, Sendable, CaseIterable, Codable {
     case microphone
     case systemAudio

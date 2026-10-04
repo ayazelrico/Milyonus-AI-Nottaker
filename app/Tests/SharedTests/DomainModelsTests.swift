@@ -7,7 +7,9 @@ struct DomainModelsTests {
         let frame = try AudioFrame(channel: .microphone, timestampNanoseconds: 42, pcm16: Data(count: 640))
         #expect(frame.sampleCount == 320)
         #expect(frame.durationSeconds == 0.02)
+        #expect(frame.durationNanoseconds == 20_000_000)
         #expect(frame.timestampNanoseconds == 42)
+        #expect(frame.endTimestampNanoseconds == 20_000_042)
     }
 
     @Test func emptyAudioIsRejected() {

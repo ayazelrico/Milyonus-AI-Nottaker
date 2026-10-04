@@ -35,6 +35,40 @@ public struct AudioCaptureMetrics: Sendable, Equatable {
     )
 }
 
+public struct AudioSynchronizationMetrics: Sendable, Equatable {
+    public let currentDriftNanoseconds: UInt64?
+    public let peakDriftNanoseconds: UInt64
+    public let driftViolationCount: UInt64
+    public let timestampDiscontinuityCount: UInt64
+    public let deliveredFrameCount: UInt64
+    public let droppedFrameCount: UInt64
+
+    public init(
+        currentDriftNanoseconds: UInt64?,
+        peakDriftNanoseconds: UInt64,
+        driftViolationCount: UInt64,
+        timestampDiscontinuityCount: UInt64,
+        deliveredFrameCount: UInt64,
+        droppedFrameCount: UInt64
+    ) {
+        self.currentDriftNanoseconds = currentDriftNanoseconds
+        self.peakDriftNanoseconds = peakDriftNanoseconds
+        self.driftViolationCount = driftViolationCount
+        self.timestampDiscontinuityCount = timestampDiscontinuityCount
+        self.deliveredFrameCount = deliveredFrameCount
+        self.droppedFrameCount = droppedFrameCount
+    }
+
+    public static let zero = AudioSynchronizationMetrics(
+        currentDriftNanoseconds: nil,
+        peakDriftNanoseconds: 0,
+        driftViolationCount: 0,
+        timestampDiscontinuityCount: 0,
+        deliveredFrameCount: 0,
+        droppedFrameCount: 0
+    )
+}
+
 /// Mono, signed PCM16, little-endian audio at 16 kHz. Timestamps use a shared monotonic clock.
 public struct AudioFrame: Sendable, Equatable {
     public static let sampleRate = 16000
@@ -50,6 +84,15 @@ public struct AudioFrame: Sendable, Equatable {
 
     public var durationSeconds: TimeInterval {
         Double(sampleCount) / Double(Self.sampleRate)
+    }
+
+    public var durationNanoseconds: UInt64 {
+        UInt64(sampleCount) * 1_000_000_000 / UInt64(Self.sampleRate)
+    }
+
+    public var endTimestampNanoseconds: UInt64 {
+        let (result, overflow) = timestampNanoseconds.addingReportingOverflow(durationNanoseconds)
+        return overflow ? UInt64.max : result
     }
 
     public init(channel: AudioChannel, timestampNanoseconds: UInt64, pcm16: Data) throws {
