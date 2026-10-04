@@ -8,7 +8,8 @@ Private repository checklist containing readiness only. No credentials or person
 - [ ] Stable Apple development signing identity is selected.
 - [ ] Apple Developer Program and distribution team ownership are confirmed.
 - [x] Dedicated Supabase development project and Frankfurt (`eu-central-1`) region are approved.
-- [ ] Supabase Auth providers and redirect URIs are approved.
+- [x] Supabase Magic Link and the native development callback redirect are approved.
+- [ ] Apple and Google Supabase Auth provider credentials and production redirects are approved.
 - [ ] Backend hosting and development deployment budget are approved.
 - [ ] Anthropic organization and data-use terms are verified.
 - [ ] Deepgram and alternative STT accounts are ready for evaluation.

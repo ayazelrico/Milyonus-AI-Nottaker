@@ -1,6 +1,6 @@
 # P0-07 - Authentication foundation
 
-Status: application implementation complete; dashboard redirect and real sign-in acceptance pending.
+Status: application implementation and dashboard redirect complete; real sign-in acceptance pending.
 
 ## Goal
 
@@ -35,9 +35,9 @@ access token to the backend `GET /v1/me` endpoint for signed identity verificati
   tokens, callback parameters, SDK diagnostics, or backend response bodies.
 
 Apple and Google code paths are ready, but those providers cannot be enabled without their external
-developer credentials. Magic Link is the acceptance path for this task. Supabase dashboard login is
-required to add the callback allowlist entry, and an owner-controlled email is required for the final
-end-to-end sign-in.
+developer credentials. Magic Link is the acceptance path for this task. The development Supabase
+project allowlisted `milyonus-nottaker://auth/callback` on 2026-10-04. An owner-controlled email is
+still required for the final end-to-end sign-in.
 
 Supabase advisors were rechecked on 2026-10-04. The only security warning is
 [disabled leaked-password protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection),

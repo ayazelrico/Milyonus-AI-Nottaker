@@ -18,8 +18,8 @@ This repository is the **Phase 0 foundation**. It is not a production recording 
 - Repository-local development tools, reproducible resources, signed local preview packaging, and CI.
 
 Audio capture, STT, AI suggestions, cloud storage, calendar, and subscriptions are upcoming phases.
-Authentication still needs dashboard redirect configuration and one real acceptance sign-in. The
-sample summary is synthetic and is never presented as generated output.
+Authentication still needs one real acceptance sign-in. The sample summary is synthetic and is never
+presented as generated output.
 
 ## Run the native preview
 
