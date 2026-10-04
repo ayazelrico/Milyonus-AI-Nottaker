@@ -5,9 +5,10 @@ import Shared
 final class MicrophoneFrameConverter: @unchecked Sendable {
     private let converter: AVAudioConverter
     private let outputFormat: AVAudioFormat
+    private let channel: AudioChannel
     private let lock = NSLock()
 
-    init(inputFormat: AVAudioFormat) throws {
+    init(inputFormat: AVAudioFormat, channel: AudioChannel = .microphone) throws {
         guard inputFormat.sampleRate > 0, inputFormat.channelCount > 0,
               let outputFormat = AVAudioFormat(
                   commonFormat: .pcmFormatInt16,
@@ -21,6 +22,7 @@ final class MicrophoneFrameConverter: @unchecked Sendable {
         }
         self.outputFormat = outputFormat
         self.converter = converter
+        self.channel = channel
     }
 
     func convert(_ input: AVAudioPCMBuffer, timestampNanoseconds: UInt64) throws -> AudioFrame? {
@@ -49,7 +51,7 @@ final class MicrophoneFrameConverter: @unchecked Sendable {
 
         let byteCount = Int(output.frameLength) * MemoryLayout<Int16>.size
         return try AudioFrame(
-            channel: .microphone,
+            channel: channel,
             timestampNanoseconds: timestampNanoseconds,
             pcm16: Data(bytes: samples, count: byteCount)
         )
