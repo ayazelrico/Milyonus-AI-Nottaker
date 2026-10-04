@@ -8,8 +8,8 @@ struct MicrophoneFrameConverterTests {
         let inputFormat = try #require(
             AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 48000, channels: 2, interleaved: false)
         )
-        let input = try #require(AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: 480))
-        input.frameLength = 480
+        let input = try #require(AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: 4800))
+        input.frameLength = 4800
         for channel in 0 ..< Int(inputFormat.channelCount) {
             let samples = try #require(input.floatChannelData?[channel])
             for index in 0 ..< Int(input.frameLength) {
@@ -23,8 +23,10 @@ struct MicrophoneFrameConverterTests {
 
         #expect(frame.channel == .microphone)
         #expect(frame.timestampNanoseconds == 42)
-        #expect(abs(frame.sampleCount - 160) <= 2)
-        let firstSample = frame.pcm16.withUnsafeBytes { $0.load(as: Int16.self) }
-        #expect(abs(Int(firstSample) - 8192) <= 700)
+        #expect(abs(frame.sampleCount - 1600) <= 16)
+        let middleSample = frame.pcm16.withUnsafeBytes { bytes in
+            bytes.loadUnaligned(fromByteOffset: frame.pcm16.count / 2, as: Int16.self)
+        }
+        #expect(abs(Int(middleSample) - 8192) <= 700)
     }
 }
