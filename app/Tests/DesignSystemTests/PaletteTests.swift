@@ -11,6 +11,10 @@ struct PaletteTests {
         #expect(!BrandFonts.isAvailable("Milyonus-MissingFont"))
     }
 
+    @Test func wordmarkIsBundled() {
+        #expect(BrandFonts.wordmarkIsAvailable)
+    }
+
     @Test func bodyTextMeetsContrastAgainstCardSurface() throws {
         let background = try #require(NSColor(DesignTokens.Palette.surface).usingColorSpace(.sRGB))
         for color in [DesignTokens.Palette.foreground, DesignTokens.Palette.secondary, DesignTokens.Palette.muted] {

@@ -37,10 +37,10 @@ struct WorkspaceView: View {
     var body: some View {
         HStack(spacing: 0) {
             sidebar
-            Rectangle().fill(DesignTokens.Palette.border).frame(width: DesignTokens.Space.hairline)
+            Rectangle().fill(DesignTokens.Palette.divider).frame(width: DesignTokens.Space.hairline)
             VStack(spacing: 0) {
                 toolbar
-                Rectangle().fill(DesignTokens.Palette.border).frame(height: DesignTokens.Space.hairline)
+                Rectangle().fill(DesignTokens.Palette.divider).frame(height: DesignTokens.Space.hairline)
                 ScrollView {
                     content
                         .frame(maxWidth: DesignTokens.Layout.contentWidth, alignment: .leading)
@@ -57,18 +57,13 @@ struct WorkspaceView: View {
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: DesignTokens.Space.large) {
-            HStack(spacing: DesignTokens.Space.medium) {
-                Image(systemName: "sparkle")
-                    .font(DesignTokens.Typography.brandSymbol)
-                    .foregroundStyle(DesignTokens.Palette.cyan)
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: DesignTokens.Space.tiny) {
-                    Text("milyonus").font(DesignTokens.Typography.wordmark)
-                    Text("NOTTAKER")
-                        .font(DesignTokens.Typography.eyebrow)
-                        .tracking(DesignTokens.Layout.letterSpacing)
-                        .foregroundStyle(DesignTokens.Palette.muted)
-                }
+            VStack(alignment: .leading, spacing: DesignTokens.Space.tiny) {
+                MilyonusWordmark()
+                Text("AI NOTTAKER")
+                    .font(DesignTokens.Typography.eyebrow)
+                    .tracking(DesignTokens.Layout.letterSpacing)
+                    .foregroundStyle(DesignTokens.Palette.muted)
+                    .padding(.leading, DesignTokens.Space.small)
             }
             .padding(.top, DesignTokens.Space.large)
             .padding(.bottom, DesignTokens.Space.medium)
@@ -87,7 +82,7 @@ struct WorkspaceView: View {
             VStack(alignment: .leading, spacing: DesignTokens.Space.medium) {
                 Image(systemName: "lock.shield")
                     .font(DesignTokens.Typography.heading)
-                    .foregroundStyle(DesignTokens.Palette.cyan)
+                    .foregroundStyle(DesignTokens.Palette.brand)
                     .accessibilityHidden(true)
                 Text(verbatim: preferences.text("Your space. Your words."))
                     .font(DesignTokens.Typography.bodyStrong)
@@ -193,6 +188,10 @@ struct WorkspaceView: View {
                 destination == item ? DesignTokens.Palette.activeFill : .clear,
                 in: RoundedRectangle(cornerRadius: DesignTokens.Shape.control)
             )
+            .overlay {
+                RoundedRectangle(cornerRadius: DesignTokens.Shape.control)
+                    .strokeBorder(destination == item ? DesignTokens.Palette.brand : .clear)
+            }
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(destination == item ? .isSelected : [])
