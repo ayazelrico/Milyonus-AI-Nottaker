@@ -27,7 +27,7 @@ struct MacOSPermissionManagerTests {
         #expect(await manager.snapshot().systemAudio == .denied)
     }
 
-    @Test func staleScreenGrantRequiresRestart() async {
+    @Test func staleScreenGrantRequiresRestart() async throws {
         let screen = FakeScreenCapture(hasAccess: false, requestResult: true)
         let history = FakeHistory()
         let restarter = FakeRestarter(result: true)
