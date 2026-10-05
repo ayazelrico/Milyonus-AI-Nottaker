@@ -2088,6 +2088,36 @@
         "en": { "stringUnit": { "state": "translated", "value": "Meeting consent is required separately before every recording." } },
         "tr": { "stringUnit": { "state": "translated", "value": "Her kayıttan önce ayrıca toplantı onayı gerekir." } }
       }
+    },
+    "Run replay": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Run replay" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Tekrarı çalıştır" } }
+      }
+    },
+    "Replay ready": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Replay ready" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Tekrar hazır" } }
+      }
+    },
+    "Replay is running": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Replay is running" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Tekrar çalışıyor" } }
+      }
+    },
+    "Replay completed": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Replay completed" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Tekrar tamamlandı" } }
+      }
+    },
+    "Replay failed": {
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Replay failed" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Tekrar başarısız oldu" } }
+      }
     }
   },
   "version": "1.0"
