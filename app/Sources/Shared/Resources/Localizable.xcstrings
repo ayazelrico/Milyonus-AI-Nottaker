@@ -2181,6 +2181,48 @@
         "en": { "stringUnit": { "state": "translated", "value": "Ready to record" } },
         "tr": { "stringUnit": { "state": "translated", "value": "Kayıta hazır" } }
       }
+    },
+    "PRIVACY": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "PRIVACY" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "GİZLİLİK" } }
+      }
+    },
+    "Meeting consent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Meeting consent" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Toplantı onayı" } }
+      }
+    },
+    "Review consent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Review consent" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Onayı incele" } }
+      }
+    },
+    "I understand that microphone and system audio may be captured and sent for transcription.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "I understand that microphone and system audio may be captured and sent for transcription." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Mikrofon ve sistem sesinin yakalanıp döküm için gönderilebileceğini anlıyorum." } }
+      }
+    },
+    "Cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Cancel" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "İptal" } }
+      }
+    },
+    "Continue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Continue" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Devam et" } }
+      }
     }
   },
   "version": "1.0"

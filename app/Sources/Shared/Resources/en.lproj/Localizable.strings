@@ -26,12 +26,14 @@
 "CONTEXT THAT COUNTS" = "CONTEXT THAT COUNTS";
 "Calendar" = "Calendar";
 "Calendar connection and recording will be available in a future build." = "Calendar connection and recording will be available in a future build.";
+"Cancel" = "Cancel";
 "Card" = "Card";
 "Check your email and open the secure sign-in link on this Mac." = "Check your email and open the secure sign-in link on this Mac.";
 "Clear search" = "Clear search";
 "Component gallery" = "Component gallery";
 "Connected" = "Connected";
 "Connection status" = "Connection status";
+"Continue" = "Continue";
 "Controls respect Reduce Motion. Surfaces remain opaque and readable with Reduce Transparency." = "Controls respect Reduce Motion. Surfaces remain opaque and readable with Reduce Transparency.";
 "Copied" = "Copied";
 "Copy sample summary" = "Copy sample summary";
@@ -57,6 +59,7 @@
 "Follow the conversation as it happens." = "Follow the conversation as it happens.";
 "Google" = "Google";
 "Granted" = "Granted";
+"I understand that microphone and system audio may be captured and sent for transcription." = "I understand that microphone and system audio may be captured and sent for transcription.";
 "I'll sketch that flow. We can review it with three teammates before the next planning session." = "I'll sketch that flow. We can review it with three teammates before the next planning session.";
 "Inter Tight and Instrument Serif are bundled under the SIL Open Font License. System font fallbacks remain available." = "Inter Tight and Instrument Serif are bundled under the SIL Open Font License. System font fallbacks remain available.";
 "Keep the first version focused on summaries and action items." = "Keep the first version focused on summaries and action items.";
@@ -71,6 +74,7 @@
 "Magic Link uses PKCE. Session credentials are stored only in macOS Keychain." = "Magic Link uses PKCE. Session credentials are stored only in macOS Keychain.";
 "Make room for the conversation. Keep what matters." = "Make room for the conversation. Keep what matters.";
 "Meet your meeting companion" = "Meet your meeting companion";
+"Meeting consent" = "Meeting consent";
 "Meeting consent is required separately before every recording." = "Meeting consent is required separately before every recording.";
 "Meeting services" = "Meeting services";
 "Meetings" = "Meetings";
@@ -91,6 +95,7 @@
 "Open System Settings" = "Open System Settings";
 "Open component gallery" = "Open component gallery";
 "Open sample" = "Open sample";
+"PRIVACY" = "PRIVACY";
 "Permission prompts appear only after you choose Request. Audio capture remains off." = "Permission prompts appear only after you choose Request. Audio capture remains off.";
 "Permissions" = "Permissions";
 "Permissions enable app features. Meeting consent is reviewed separately before every recording." = "Permissions enable app features. Meeting consent is reviewed separately before every recording.";
@@ -113,6 +118,7 @@
 "Request" = "Request";
 "Restart Milyonus" = "Restart Milyonus";
 "Restart required" = "Restart required";
+"Review consent" = "Review consent";
 "Review the sample flow with three teammates before the next planning session." = "Review the sample flow with three teammates before the next planning session.";
 "Run replay" = "Run replay";
 "SAMPLE DATA" = "SAMPLE DATA";

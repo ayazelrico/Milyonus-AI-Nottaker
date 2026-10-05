@@ -40,3 +40,8 @@ P1-12 adds the native live meeting workspace and menu bar start/stop controls. T
 interim and final transcript segments with timestamps and a listening status indicator. Controls are
 disabled until consent and injectable capture/transcription services are ready; the local preview
 does not request permissions or record. The floating insight overlay remains a Phase 2 feature.
+
+P1-13 adds a per-meeting consent sheet before recording. It explains microphone and system audio
+capture, cloud transcription, and the user's control. Confirmation is held in memory for the active
+meeting only and is cleared when recording stops. The backend token request continues to require the
+same positive `consentConfirmed` assertion.
