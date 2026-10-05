@@ -100,10 +100,15 @@
 "Quit Milyonus" = "Milyonus uygulamasından çık";
 "Ready example" = "Hazır örneği";
 "Recording is not available in this preview." = "Kayıt bu önizlemede kullanılamıyor.";
+"Replay completed" = "Tekrar tamamlandı";
+"Replay failed" = "Tekrar başarısız oldu";
+"Replay is running" = "Tekrar çalışıyor";
+"Replay ready" = "Tekrar hazır";
 "Request" = "İzin iste";
 "Restart Milyonus" = "Milyonus'u yeniden başlat";
 "Restart required" = "Yeniden başlatma gerekiyor";
 "Review the sample flow with three teammates before the next planning session." = "Bir sonraki planlamadan önce örnek akışı üç ekip arkadaşıyla incele.";
+"Run replay" = "Tekrarı çalıştır";
 "SAMPLE DATA" = "ÖRNEK VERİ";
 "SAMPLE MEETING" = "ÖRNEK TOPLANTI";
 "Sample" = "Örnek";

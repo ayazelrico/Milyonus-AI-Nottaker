@@ -36,7 +36,7 @@ Acceptance: 30-minute meeting captured on both channels, live EN/TR transcript, 
 - [ ] P1-03 System audio via ScreenCaptureKit (all apps except self), downmix/resample, per-app filter
 - [x] P1-04 Mixer/timestamps: shared host clock, frame contract, drift monitor, bounded buffers
 - [x] P1-05 Spike: Core Audio process tap vs SCK; write findings in ADR-004 update
-- [ ] P1-06 `ReplaySource` + fixtures (EN, TR) + Debug "Run replay" menu
+- [x] P1-06 `ReplaySource` + fixtures (EN, TR) + Debug "Run replay" menu
 - [ ] P1-07 Backend `POST /v1/stt/token` with Deepgram adapter (short-lived tokens), entitlement stub
 - [ ] P1-08 STT client: WebSocket session per channel, events, reconnect/backoff, token refresh
 - [ ] P1-09 Bake-off: Deepgram vs AssemblyAI on 10 recordings (EN/TR); report in `docs/reports/stt-bakeoff.md`; pick primary; implement secondary adapter

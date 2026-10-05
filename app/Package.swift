@@ -27,11 +27,15 @@ let package = Package(
             name: "Authentication",
             dependencies: ["Shared", .product(name: "Auth", package: "supabase-swift")]
         ),
-        .target(name: "AudioCapture", dependencies: ["Shared"]),
+        .target(
+            name: "AudioCapture",
+            dependencies: ["Shared"],
+            resources: [.process("Resources")]
+        ),
         .target(name: "Permissions", dependencies: ["Shared"]),
         .executableTarget(
             name: "MilyonusApp",
-            dependencies: ["Shared", "DesignSystem", "Authentication", "Permissions"]
+            dependencies: ["Shared", "DesignSystem", "Authentication", "AudioCapture", "Permissions"]
         ),
         .testTarget(name: "SharedTests", dependencies: ["Shared"]),
         .testTarget(name: "DesignSystemTests", dependencies: ["DesignSystem"]),

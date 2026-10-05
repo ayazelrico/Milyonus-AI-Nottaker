@@ -38,6 +38,10 @@ transcripts/
 *.m4a
 *.mp3
 *.log
+!app/Sources/AudioCapture/Resources/ReplayFixtures/en-microphone.wav
+!app/Sources/AudioCapture/Resources/ReplayFixtures/en-system.wav
+!app/Sources/AudioCapture/Resources/ReplayFixtures/tr-microphone.wav
+!app/Sources/AudioCapture/Resources/ReplayFixtures/tr-system.wav
 
 # Local service state
 supabase/.temp/

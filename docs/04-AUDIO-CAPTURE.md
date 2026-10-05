@@ -1,8 +1,8 @@
 # 04 - Audio capture
 
 Phase 1 specification, reconstructed on 2026-10-02. Microphone capture, system audio capture,
-permissions, and the dual-channel synchronization mixer are implemented. Live consent, STT wiring,
-replay, and real-device acceptance remain in their roadmap tasks.
+permissions, the dual-channel synchronization mixer, and synthetic EN/TR replay sources are
+implemented. Live consent, STT wiring, and real-device acceptance remain in their roadmap tasks.
 
 Use AVAudioEngine for microphone capture and ScreenCaptureKit for system audio on macOS 14.
 Put implementations behind Shared's audio source contract. Exclude this app from system audio.
@@ -18,3 +18,7 @@ Start only after meeting consent and OS authorization. Stop cancels both channel
 streams. Device removal, default-device changes, sleep/wake, cancellation, and permission revocation
 must produce explicit state and recoverable errors. Usage descriptions and entitlements do not grant
 consent. Test resampling, channel identity, drift, hot-swap, and a 30-minute real/replay soak.
+
+`ReplaySource` reads bundled 16 kHz mono PCM16 WAVE fixtures and emits the same frame contract in real
+time or immediate test mode. Debug builds expose English and Turkish two-channel runs in the Developer
+menu. Replay has no capture permissions, network calls, persistence, or real meeting data.

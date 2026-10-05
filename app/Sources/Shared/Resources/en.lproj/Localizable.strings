@@ -100,10 +100,15 @@
 "Quit Milyonus" = "Quit Milyonus";
 "Ready example" = "Ready example";
 "Recording is not available in this preview." = "Recording is not available in this preview.";
+"Replay completed" = "Replay completed";
+"Replay failed" = "Replay failed";
+"Replay is running" = "Replay is running";
+"Replay ready" = "Replay ready";
 "Request" = "Request";
 "Restart Milyonus" = "Restart Milyonus";
 "Restart required" = "Restart required";
 "Review the sample flow with three teammates before the next planning session." = "Review the sample flow with three teammates before the next planning session.";
+"Run replay" = "Run replay";
 "SAMPLE DATA" = "SAMPLE DATA";
 "SAMPLE MEETING" = "SAMPLE MEETING";
 "Sample" = "Sample";

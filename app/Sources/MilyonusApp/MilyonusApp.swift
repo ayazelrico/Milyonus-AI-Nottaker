@@ -1,4 +1,7 @@
 import AppKit
+#if DEBUG
+    import AudioCapture
+#endif
 import DesignSystem
 import Observation
 import Shared
@@ -26,6 +29,9 @@ struct MilyonusApp: App {
     @State private var preferences = AppPreferences()
     @State private var authentication = AuthenticationCoordinator()
     @State private var permissions = PermissionCoordinator()
+    #if DEBUG
+        @State private var replay = ReplayCoordinator()
+    #endif
 
     init() {
         let fontsRegistered = BrandFonts.register()
@@ -76,6 +82,11 @@ struct MilyonusApp: App {
         }
         .defaultSize(width: DesignTokens.Layout.windowWidth, height: DesignTokens.Layout.windowHeight)
         .windowStyle(.hiddenTitleBar)
+        #if DEBUG
+            .commands {
+                DeveloperCommands(preferences: preferences, replay: replay)
+            }
+        #endif
 
         Settings {
             PreferencesView(
@@ -108,15 +119,15 @@ struct MilyonusApp: App {
                 .preferredColorScheme(.dark)
             }
             .defaultSize(width: DesignTokens.Layout.galleryWidth, height: DesignTokens.Layout.galleryHeight)
-            .commands { GalleryCommands(preferences: preferences) }
         #endif
     }
 }
 
 #if DEBUG
-    private struct GalleryCommands: Commands {
+    private struct DeveloperCommands: Commands {
         @Environment(\.openWindow) private var openWindow
         let preferences: AppPreferences
+        let replay: ReplayCoordinator
 
         var body: some Commands {
             CommandMenu(preferences.text("Developer")) {
@@ -124,6 +135,17 @@ struct MilyonusApp: App {
                     openWindow(id: "gallery")
                 }
                 .keyboardShortcut("g", modifiers: [.command, .shift])
+                Divider()
+                Menu(preferences.text("Run replay")) {
+                    Button(preferences.text("English")) {
+                        replay.run(language: .english)
+                    }
+                    Button(preferences.text("Türkçe")) {
+                        replay.run(language: .turkish)
+                    }
+                }
+                .disabled(replay.isRunning)
+                Text(verbatim: preferences.text(replay.statusKey))
             }
         }
     }
