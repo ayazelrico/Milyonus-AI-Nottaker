@@ -4,7 +4,8 @@ import SwiftUI
 
 struct LiveMeetingView: View {
     let preferences: AppPreferences
-    let coordinator: LiveMeetingCoordinator
+    @Bindable var coordinator: LiveMeetingCoordinator
+    @State private var isShowingConsent = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignTokens.Space.section) {
@@ -36,6 +37,15 @@ struct LiveMeetingView: View {
                         }
                     }
 
+                    if !coordinator.consentConfirmed {
+                        DSButton(
+                            preferences.text("Review consent"),
+                            symbol: "checkmark.shield",
+                            variant: .quiet,
+                            action: { isShowingConsent = true }
+                        )
+                    }
+
                     if coordinator.segments.isEmpty {
                         Text(verbatim: unavailableMessage)
                             .foregroundStyle(DesignTokens.Palette.secondary)
@@ -44,6 +54,9 @@ struct LiveMeetingView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $isShowingConsent) {
+            ConsentSheet(preferences: preferences, coordinator: coordinator)
         }
     }
 
@@ -92,5 +105,45 @@ struct LiveMeetingView: View {
     private func timecode(for segment: TranscriptSegment) -> String {
         let totalSeconds = segment.startMilliseconds / 1000
         return String(format: "%02d:%02d", totalSeconds / 60, totalSeconds % 60)
+    }
+}
+
+private struct ConsentSheet: View {
+    let preferences: AppPreferences
+    @Bindable var coordinator: LiveMeetingCoordinator
+    @Environment(\.dismiss) private var dismiss
+    @State private var accepted = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignTokens.Space.large) {
+            PageHeading(
+                eyebrow: preferences.text("PRIVACY"),
+                title: preferences.text("Meeting consent"),
+                subtitle: preferences
+                    .text("You stay in control. Recording will always require your action and consent.")
+            )
+            Text(verbatim: preferences
+                .text("Before recording becomes available, you will be able to review consent and permissions."))
+                .foregroundStyle(DesignTokens.Palette.secondary)
+            Toggle(isOn: $accepted) {
+                Text(verbatim: preferences
+                    .text("I understand that microphone and system audio may be captured and sent for transcription."))
+            }
+            .toggleStyle(.switch)
+            HStack {
+                Spacer()
+                DSButton(preferences.text("Cancel"), variant: .quiet, action: { dismiss() })
+                DSButton(preferences.text("Continue"), symbol: "checkmark", action: {
+                    coordinator.consentConfirmed = accepted
+                    dismiss()
+                })
+                .disabled(!accepted)
+            }
+        }
+        .padding(DesignTokens.Space.section)
+        .frame(width: 560)
+        .foregroundStyle(DesignTokens.Palette.foreground)
+        .background(DesignTokens.Palette.canvas)
+        .onAppear { accepted = coordinator.consentConfirmed }
     }
 }

@@ -89,6 +89,7 @@ final class LiveMeetingCoordinator {
             guard let self else { return }
             await transcription?.stop()
             await mixer?.stop()
+            consentConfirmed = false
             state = .idle
         }
     }

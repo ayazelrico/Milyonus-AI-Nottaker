@@ -26,12 +26,14 @@
 "CONTEXT THAT COUNTS" = "ANLAM KATAN BİLGİ";
 "Calendar" = "Takvim";
 "Calendar connection and recording will be available in a future build." = "Takvim bağlantısı ve kayıt gelecek bir sürümde kullanıma açılacak.";
+"Cancel" = "İptal";
 "Card" = "Kart";
 "Check your email and open the secure sign-in link on this Mac." = "E-postanızı kontrol edin ve güvenli giriş bağlantısını bu Mac'te açın.";
 "Clear search" = "Aramayı temizle";
 "Component gallery" = "Bileşen galerisi";
 "Connected" = "Bağlı";
 "Connection status" = "Bağlantı durumu";
+"Continue" = "Devam et";
 "Controls respect Reduce Motion. Surfaces remain opaque and readable with Reduce Transparency." = "Kontroller Hareketi Azalt ayarına uyar. Saydamlığı Azalt etkinken yüzeyler opak ve okunaklı kalır.";
 "Copied" = "Kopyalandı";
 "Copy sample summary" = "Örnek özeti kopyala";
@@ -57,6 +59,7 @@
 "Follow the conversation as it happens." = "Konuşmayı gerçekleşirken takip edin.";
 "Google" = "Google";
 "Granted" = "İzin verildi";
+"I understand that microphone and system audio may be captured and sent for transcription." = "Mikrofon ve sistem sesinin yakalanıp döküm için gönderilebileceğini anlıyorum.";
 "I'll sketch that flow. We can review it with three teammates before the next planning session." = "Bu akışı taslak olarak çizeceğim. Bir sonraki planlamadan önce üç ekip arkadaşıyla inceleyebiliriz.";
 "Inter Tight and Instrument Serif are bundled under the SIL Open Font License. System font fallbacks remain available." = "Inter Tight ve Instrument Serif, SIL Open Font License kapsamında pakete dahildir. Sistem yazı tipi alternatifleri kullanılabilir.";
 "Keep the first version focused on summaries and action items." = "İlk sürümü özetler ve görevlere odakla.";
@@ -71,6 +74,7 @@
 "Magic Link uses PKCE. Session credentials are stored only in macOS Keychain." = "Magic Link PKCE kullanır. Oturum bilgileri yalnızca macOS Anahtar Zinciri'nde saklanır.";
 "Make room for the conversation. Keep what matters." = "Görüşmeye alan açın. Önemli olanı saklayın.";
 "Meet your meeting companion" = "Toplantı yardımcınızla tanışın";
+"Meeting consent" = "Toplantı onayı";
 "Meeting consent is required separately before every recording." = "Her kayıttan önce ayrıca toplantı onayı gerekir.";
 "Meeting services" = "Toplantı hizmetleri";
 "Meetings" = "Toplantılar";
@@ -91,6 +95,7 @@
 "Open System Settings" = "Sistem Ayarları'nı aç";
 "Open component gallery" = "Bileşen galerisini aç";
 "Open sample" = "Örneği aç";
+"PRIVACY" = "GİZLİLİK";
 "Permission prompts appear only after you choose Request. Audio capture remains off." = "İzin istemleri yalnızca İzin iste seçeneğine bastığınızda görünür. Ses yakalama kapalı kalır.";
 "Permissions" = "İzinler";
 "Permissions enable app features. Meeting consent is reviewed separately before every recording." = "İzinler uygulama özelliklerini etkinleştirir. Toplantı onayı her kayıttan önce ayrıca değerlendirilir.";
@@ -113,6 +118,7 @@
 "Request" = "İzin iste";
 "Restart Milyonus" = "Milyonus'u yeniden başlat";
 "Restart required" = "Yeniden başlatma gerekiyor";
+"Review consent" = "Onayı incele";
 "Review the sample flow with three teammates before the next planning session." = "Bir sonraki planlamadan önce örnek akışı üç ekip arkadaşıyla incele.";
 "Run replay" = "Tekrarı çalıştır";
 "SAMPLE DATA" = "ÖRNEK VERİ";
