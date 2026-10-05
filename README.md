@@ -17,9 +17,11 @@ This repository is the **Phase 0 foundation**. It is not a production recording 
   Keychain-backed sessions, strict callback validation, and optional backend identity confirmation.
 - Dedicated Supabase development schema with workspace RLS, transactional isolation tests, and
   generated backend types. It is not connected to the application yet.
+- Native Deepgram streaming client with per-channel WebSockets, interim/final transcript events,
+  keepalive, bounded reconnect backoff, cancellation, and fresh tokens on reconnect.
 - Repository-local development tools, reproducible resources, signed local preview packaging, and CI.
 
-Live STT streaming, AI suggestions, cloud storage, calendar, and subscriptions are upcoming phases.
+Live meeting UI wiring, AI suggestions, cloud storage, calendar, and subscriptions are upcoming phases.
 Authentication still needs one real acceptance sign-in. The sample summary is synthetic and is never
 presented as generated output.
 
@@ -64,7 +66,8 @@ See [verification report](docs/reports/foundation-verification.md) for actual re
 
 ## Architecture and planning
 
-`app/` contains a SwiftPM package with Shared, DesignSystem, Authentication, and MilyonusApp. Feature
+`app/` contains a SwiftPM package with Shared, DesignSystem, Authentication, AudioCapture,
+Permissions, Transcription, and MilyonusApp. Feature
 targets are added when they own tested behavior. `backend/` contains Fastify/TypeScript services. Provider credentials
 stay on the backend; future direct STT streaming uses short-lived backend-issued tokens.
 

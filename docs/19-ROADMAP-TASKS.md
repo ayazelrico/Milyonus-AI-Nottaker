@@ -38,7 +38,7 @@ Acceptance: 30-minute meeting captured on both channels, live EN/TR transcript, 
 - [x] P1-05 Spike: Core Audio process tap vs SCK; write findings in ADR-004 update
 - [x] P1-06 `ReplaySource` + fixtures (EN, TR) + Debug "Run replay" menu
 - [x] P1-07 Backend `POST /v1/stt/token` with Deepgram adapter (short-lived tokens), entitlement stub
-- [ ] P1-08 STT client: WebSocket session per channel, events, reconnect/backoff, token refresh
+- [x] P1-08 STT client: WebSocket session per channel, events, reconnect/backoff, token refresh
 - [ ] P1-09 Bake-off: Deepgram vs AssemblyAI on 10 recordings (EN/TR); report in `docs/reports/stt-bakeoff.md`; pick primary; implement secondary adapter
 - [ ] P1-10 `SegmentAssembler`, `TranscriptStore` actor, local persistence (GRDB, encrypted text), outbox + `PUT segments:batch`
 - [ ] P1-11 Local rolling audio buffer + backfill after network drop
