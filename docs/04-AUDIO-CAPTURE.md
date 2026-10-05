@@ -14,6 +14,12 @@ Negotiate input formats, then emit 16 kHz mono PCM16 with channel identity and m
 Preserve a common host clock, bound buffers, and account for dropped frames and discontinuities.
 Audio callbacks do not allocate unbounded work, invoke cloud calls, log samples, or mutate UI.
 
+P1-11 adds `RollingAudioBuffer`, a per-channel actor that retains a bounded ten-second window of
+PCM frames. `DualChannelAudioMixer` can feed it while delivering the normal stream. A reconnect
+can use the last acknowledged frame end timestamp to request frames after that watermark. The buffer
+reports evictions and timestamp discontinuities; it never fabricates missing audio. The retained
+window is local memory only and is cleared when the meeting pipeline resets.
+
 Start only after meeting consent and OS authorization. Stop cancels both channels and downstream
 streams. Device removal, default-device changes, sleep/wake, cancellation, and permission revocation
 must produce explicit state and recoverable errors. Usage descriptions and entitlements do not grant

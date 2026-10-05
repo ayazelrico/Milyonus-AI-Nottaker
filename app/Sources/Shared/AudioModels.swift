@@ -35,6 +35,32 @@ public struct AudioCaptureMetrics: Sendable, Equatable {
     )
 }
 
+public struct AudioRollingBufferMetrics: Sendable, Equatable {
+    public let retainedFrameCount: Int
+    public let retainedDurationNanoseconds: UInt64
+    public let droppedFrameCount: UInt64
+    public let discontinuityCount: UInt64
+
+    public init(
+        retainedFrameCount: Int,
+        retainedDurationNanoseconds: UInt64,
+        droppedFrameCount: UInt64,
+        discontinuityCount: UInt64
+    ) {
+        self.retainedFrameCount = retainedFrameCount
+        self.retainedDurationNanoseconds = retainedDurationNanoseconds
+        self.droppedFrameCount = droppedFrameCount
+        self.discontinuityCount = discontinuityCount
+    }
+
+    public static let zero = AudioRollingBufferMetrics(
+        retainedFrameCount: 0,
+        retainedDurationNanoseconds: 0,
+        droppedFrameCount: 0,
+        discontinuityCount: 0
+    )
+}
+
 public struct AudioSynchronizationMetrics: Sendable, Equatable {
     public let currentDriftNanoseconds: UInt64?
     public let peakDriftNanoseconds: UInt64

@@ -6,6 +6,7 @@ public actor DualChannelAudioMixer: AudioMixerService {
 
     private let microphoneSource: any AudioSource
     private let systemSource: any AudioSource
+    private let rollingBuffer: (any AudioRollingBuffer)?
     private let outputBufferLimit: Int
     private let driftThresholdNanoseconds: UInt64
 
@@ -24,7 +25,8 @@ public actor DualChannelAudioMixer: AudioMixerService {
         microphoneSource: any AudioSource,
         systemSource: any AudioSource,
         outputBufferLimit: Int = 64,
-        driftThresholdNanoseconds: UInt64 = DualChannelAudioMixer.defaultDriftThresholdNanoseconds
+        driftThresholdNanoseconds: UInt64 = DualChannelAudioMixer.defaultDriftThresholdNanoseconds,
+        rollingBuffer: (any AudioRollingBuffer)? = nil
     ) {
         precondition(outputBufferLimit > 0)
         precondition(driftThresholdNanoseconds > 0)
@@ -32,6 +34,7 @@ public actor DualChannelAudioMixer: AudioMixerService {
         self.systemSource = systemSource
         self.outputBufferLimit = outputBufferLimit
         self.driftThresholdNanoseconds = driftThresholdNanoseconds
+        self.rollingBuffer = rollingBuffer
     }
 
     public func start() async throws -> AsyncThrowingStream<AudioFrame, Error> {
@@ -100,7 +103,7 @@ public actor DualChannelAudioMixer: AudioMixerService {
         do {
             for try await frame in stream {
                 guard !Task.isCancelled else { return }
-                try receive(frame, expectedChannel: expectedChannel, sessionID: sessionID)
+                try await receive(frame, expectedChannel: expectedChannel, sessionID: sessionID)
             }
             await finish(
                 sessionID: sessionID,
@@ -117,7 +120,7 @@ public actor DualChannelAudioMixer: AudioMixerService {
         _ frame: AudioFrame,
         expectedChannel: AudioChannel,
         sessionID: UUID
-    ) throws {
+    ) async throws {
         guard activeSessionID == sessionID, let buffer = activeBuffer else { return }
         guard frame.channel == expectedChannel else {
             throw AudioMixerError.invalidSourceChannel(expected: expectedChannel, actual: frame.channel)
@@ -131,6 +134,7 @@ public actor DualChannelAudioMixer: AudioMixerService {
         lastStartTimestamps[frame.channel] = frame.timestampNanoseconds
         latestEndTimestamps[frame.channel] = frame.endTimestampNanoseconds
         updateDrift()
+        await rollingBuffer?.append(frame)
         buffer.yield(frame)
     }
 
