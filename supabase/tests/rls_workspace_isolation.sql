@@ -77,6 +77,14 @@ begin
         or has_table_privilege('anon', 'public.transcript_segments', 'select') then
         raise exception 'Grant failure: anon must not have select access to application tables';
     end if;
+
+    if has_function_privilege(
+        'anon',
+        'public.upsert_transcript_segments(uuid, uuid, jsonb)',
+        'execute'
+    ) then
+        raise exception 'Grant failure: anon must not execute transcript batch writes';
+    end if;
 end;
 $test$;
 
@@ -106,6 +114,24 @@ begin
         raise exception 'RLS failure: user A must see only transcript A';
     end if;
 
+    if public.upsert_transcript_segments(
+        'a0000000-0000-0000-0000-000000000001',
+        'a1000000-0000-0000-0000-000000000001',
+        '[{"id":"a3000000-0000-0000-0000-000000000001","channel":"microphone","content":"Synthetic RPC transcript A","start_ms":1000,"end_ms":2000,"is_final":false,"revision":1}]'::jsonb
+    ) <> 1 then
+        raise exception 'RPC failure: valid transcript batch was not accepted';
+    end if;
+
+    if (
+        select count(*)
+        from public.transcript_segments
+        where id = 'a3000000-0000-0000-0000-000000000001'
+            and content = 'Synthetic RPC transcript A'
+            and revision = 1
+    ) <> 1 then
+        raise exception 'RPC failure: accepted segment was not persisted';
+    end if;
+
     begin
         insert into public.meetings (workspace_id, created_by, title)
         values (
@@ -126,6 +152,17 @@ begin
         if found then
             raise exception 'RLS failure: user A updated transcript B';
         end if;
+    end;
+
+    begin
+        perform public.upsert_transcript_segments(
+            'b0000000-0000-0000-0000-000000000002',
+            'b1000000-0000-0000-0000-000000000002',
+            '[{"id":"a3000000-0000-0000-0000-000000000002","channel":"system","content":"Cross-workspace RPC must fail","start_ms":0,"end_ms":1,"is_final":true,"revision":1}]'::jsonb
+        );
+        raise exception 'RLS failure: user A wrote an RPC segment into workspace B';
+    exception
+        when insufficient_privilege then null;
     end;
 end;
 $test$;

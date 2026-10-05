@@ -10,12 +10,80 @@ import { writeOperationalEvent } from './observability.js';
 import type { EventSink } from './observability.js';
 import { createDeepgramTokenIssuer } from './stt/deepgram-token-issuer.js';
 import type { SttTokenIssuer } from './stt/deepgram-token-issuer.js';
+import { createSupabaseSegmentWriter } from './transcript/supabase-segment-writer.js';
+import type {
+  TranscriptBatchInput,
+  TranscriptSegmentInput,
+  TranscriptSegmentWriter,
+} from './transcript/supabase-segment-writer.js';
 
 interface AppDependencies {
   readonly verifyToken?: TokenVerifier;
   readonly emit?: EventSink;
   readonly checkEntitlement?: EntitlementChecker;
   readonly issueSttToken?: SttTokenIssuer;
+  readonly writeTranscriptSegments?: TranscriptSegmentWriter;
+}
+
+interface AuthenticatedRequest {
+  readonly identity: Identity;
+  readonly accessToken: string;
+}
+
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function transcriptBatch(body: unknown): TranscriptBatchInput | undefined {
+  if (typeof body !== 'object' || body === null || Array.isArray(body)) return undefined;
+  const candidate = body as Record<string, unknown>;
+  if (
+    Object.keys(candidate).length !== 3 ||
+    typeof candidate.workspaceId !== 'string' ||
+    !uuidPattern.test(candidate.workspaceId) ||
+    typeof candidate.meetingId !== 'string' ||
+    !uuidPattern.test(candidate.meetingId) ||
+    !Array.isArray(candidate.segments) ||
+    candidate.segments.length < 1 ||
+    candidate.segments.length > 100
+  ) {
+    return undefined;
+  }
+
+  const segments: TranscriptSegmentInput[] = [];
+  const segmentIDs = new Set<string>();
+  for (const value of candidate.segments) {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) return undefined;
+    const segment = value as Record<string, unknown>;
+    if (
+      Object.keys(segment).length !== 7 ||
+      typeof segment.id !== 'string' ||
+      !uuidPattern.test(segment.id) ||
+      (segment.channel !== 'microphone' && segment.channel !== 'system') ||
+      typeof segment.text !== 'string' ||
+      segment.text.length < 1 ||
+      segment.text.length > 10_000 ||
+      typeof segment.startMilliseconds !== 'number' ||
+      !Number.isSafeInteger(segment.startMilliseconds) ||
+      segment.startMilliseconds < 0 ||
+      typeof segment.endMilliseconds !== 'number' ||
+      !Number.isSafeInteger(segment.endMilliseconds) ||
+      segment.endMilliseconds < segment.startMilliseconds ||
+      typeof segment.isFinal !== 'boolean' ||
+      typeof segment.revision !== 'number' ||
+      !Number.isSafeInteger(segment.revision) ||
+      segment.revision < 1
+    ) {
+      return undefined;
+    }
+    const normalizedID = segment.id.toLowerCase();
+    if (segmentIDs.has(normalizedID)) return undefined;
+    segmentIDs.add(normalizedID);
+    segments.push(segment as unknown as TranscriptSegmentInput);
+  }
+  return {
+    workspaceId: candidate.workspaceId.toLowerCase(),
+    meetingId: candidate.meetingId.toLowerCase(),
+    segments,
+  };
 }
 
 function errorResponse(
@@ -32,7 +100,8 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
   if (
     (dependencies.verifyToken !== undefined ||
       dependencies.checkEntitlement !== undefined ||
-      dependencies.issueSttToken !== undefined) &&
+      dependencies.issueSttToken !== undefined ||
+      dependencies.writeTranscriptSegments !== undefined) &&
     config.environment !== 'test'
   ) {
     throw new Error('Dependency injection is restricted to tests');
@@ -46,11 +115,16 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
   const issueSttToken =
     dependencies.issueSttToken ??
     (config.deepgram === undefined ? undefined : createDeepgramTokenIssuer(config.deepgram));
+  const writeTranscriptSegments =
+    dependencies.writeTranscriptSegments ??
+    (config.supabaseData === undefined
+      ? undefined
+      : createSupabaseSegmentWriter(config.supabaseData));
   const app = Fastify({
     logger: false,
     requestIdHeader: false,
     genReqId: () => randomUUID(),
-    bodyLimit: 16_384,
+    bodyLimit: 262_144,
     requestTimeout: 15_000,
     connectionTimeout: 15_000,
     trustProxy: false,
@@ -101,7 +175,7 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
   async function authenticate(
     request: FastifyRequest,
     reply: FastifyReply,
-  ): Promise<Identity | undefined> {
+  ): Promise<AuthenticatedRequest | undefined> {
     if (verifyToken === undefined) {
       errorResponse(
         reply,
@@ -119,7 +193,7 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
     const token = authorizationCount === 1 ? bearerToken(request.headers.authorization) : undefined;
     if (token !== undefined) {
       try {
-        return await verifyToken(token);
+        return { identity: await verifyToken(token), accessToken: token };
       } catch {
         // Provider failures and invalid tokens both fail closed without exposing their details.
       }
@@ -133,7 +207,7 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
   app.get('/v1/me', async (request, reply) => {
     const identity = await authenticate(request, reply);
     if (identity === undefined) return;
-    return { user: { id: identity.id } };
+    return { user: { id: identity.identity.id } };
   });
 
   app.post('/v1/stt/token', async (request, reply) => {
@@ -158,7 +232,7 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
       );
     }
 
-    if (!(await checkEntitlement(identity))) {
+    if (!(await checkEntitlement(identity.identity))) {
       return errorResponse(
         reply,
         403,
@@ -193,6 +267,47 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
         503,
         'STT_UNAVAILABLE',
         'Transcription is unavailable.',
+        request.id,
+      );
+    }
+  });
+
+  app.put('/v1/transcript/segments:batch', async (request, reply) => {
+    const authenticated = await authenticate(request, reply);
+    if (authenticated === undefined) return;
+    const batch = transcriptBatch(request.body);
+    if (batch === undefined) {
+      return errorResponse(
+        reply,
+        400,
+        'INVALID_SEGMENT_BATCH',
+        'Segment batch is invalid.',
+        request.id,
+      );
+    }
+    if (writeTranscriptSegments === undefined) {
+      return errorResponse(
+        reply,
+        503,
+        'TRANSCRIPT_SYNC_UNAVAILABLE',
+        'Transcript sync is unavailable.',
+        request.id,
+      );
+    }
+    try {
+      const accepted = await writeTranscriptSegments(
+        authenticated.identity,
+        authenticated.accessToken,
+        batch,
+      );
+      return { accepted };
+    } catch {
+      emit({ event: 'request_failed', requestId: request.id, statusCode: 503 });
+      return errorResponse(
+        reply,
+        503,
+        'TRANSCRIPT_SYNC_UNAVAILABLE',
+        'Transcript sync is unavailable.',
         request.id,
       );
     }

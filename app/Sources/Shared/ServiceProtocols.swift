@@ -78,6 +78,26 @@ public protocol TranscriptionService: Sendable {
     func stop() async
 }
 
+public protocol TranscriptEncryptionKeyProvider: Sendable {
+    func keyData() async throws -> Data
+}
+
+public protocol TranscriptRevisionStorage: Sendable {
+    func persist(_ revisions: [TranscriptSegmentRevision]) async throws
+    func transcript(for meetingID: UUID) async throws -> [TranscriptSegmentRevision]
+    func pendingUpload(for meetingID: UUID, limit: Int) async throws -> [TranscriptSegmentRevision]
+    func markUploaded(_ revisions: [TranscriptRevisionReference]) async throws
+    func deleteTranscript(meetingID: UUID) async throws
+}
+
+public protocol TranscriptBatchUploading: Sendable {
+    func upload(
+        workspaceID: UUID,
+        meetingID: UUID,
+        revisions: [TranscriptSegmentRevision]
+    ) async throws -> Int
+}
+
 public protocol LanguageModelService: Sendable {
     func availability() async -> ServiceAvailability
     func generate(_ request: GenerationRequest) async throws -> AsyncThrowingStream<GenerationEvent, Error>

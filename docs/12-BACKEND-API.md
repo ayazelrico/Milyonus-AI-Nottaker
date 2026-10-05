@@ -1,7 +1,8 @@
 # 12 - Backend API
 
-Status: Phase 1 local backend. A dedicated empty Supabase development database is provisioned, but
-the backend is not deployed or connected to it yet.
+Status: Phase 1 local backend. A dedicated empty Supabase development database is provisioned. The
+transcript batch adapter and database RPC are implemented, and the migration is applied to the
+development project. The backend is not deployed and runtime Data API configuration remains private.
 
 ## Runtime and commands
 
@@ -23,8 +24,10 @@ The application factory does not load files or open a listening socket. The proc
 | `AUTH_ISSUER` | Exact HTTPS issuer ending in `/auth/v1`, without trailing slash, credentials, query, or fragment. |
 | `AUTH_AUDIENCE` | Exact expected audience, normally `authenticated`. |
 | `DEEPGRAM_API_KEY` | Optional server-only API key used to mint temporary STT tokens. Must never enter app configuration. |
+| `SUPABASE_URL` | Optional exact HTTPS project origin used by the transcript Data API adapter. |
+| `SUPABASE_PUBLISHABLE_KEY` | Optional project publishable key. It is paired with the user's JWT and RLS, and is never logged. |
 
-Both auth fields may be absent during local development, which keeps liveness available and authentication unavailable. Partial configuration always fails startup. Production requires both fields. The JWKS URL is derived from the trusted issuer by appending `/.well-known/jwks.json`; a request cannot select the issuer or keys. The backend can start without `DEEPGRAM_API_KEY`; the STT token route then returns `503 STT_UNAVAILABLE`. The key is consumed only by the Deepgram adapter and is never returned or logged. Other provider secrets remain reserved in the empty template.
+Both auth fields may be absent during local development, which keeps liveness available and authentication unavailable. Partial configuration always fails startup. Production requires both fields. The JWKS URL is derived from the trusted issuer by appending `/.well-known/jwks.json`; a request cannot select the issuer or keys. The backend can start without `DEEPGRAM_API_KEY`; the STT token route then returns `503 STT_UNAVAILABLE`. Supabase Data API configuration is also optional as a pair; without it, transcript sync returns `503 TRANSCRIPT_SYNC_UNAVAILABLE`. The publishable key does not bypass RLS. Provider configuration is consumed only by its server adapter and is never returned or logged. Other provider secrets remain reserved in the empty template.
 
 Model identifiers are centralized in `backend/src/config/models.ts`. The only provider integration is
 the Deepgram temporary-token adapter. STT streaming, LLM calls, and prompts are not implemented here.
@@ -36,6 +39,7 @@ the Deepgram temporary-token adapter. STT streaming, LLM calls, and prompts are 
 | `GET /health` | Public | `200 {"status":"ok"}`. Liveness only; this is not a database/provider readiness check. |
 | `GET /v1/me` | Valid access token | `200 {"user":{"id":"<UUID>"}}`. No profile, email, workspace, subscription, or credential data. |
 | `POST /v1/stt/token` | Valid access token, consent assertion, entitlement | Returns a 30-second Deepgram bearer token for direct STT connection setup. |
+| `PUT /v1/transcript/segments:batch` | Valid access token | Idempotently accepts one to 100 transcript segment revisions through the RLS-protected database RPC. |
 
 Protected requests carry exactly one `Authorization: Bearer <JWT>` header. Duplicate raw headers are rejected as a malformed request before verification. Tokens in cookies or query strings are not accepted. Responses have `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`, and a server-generated `X-Request-Id`. Client request IDs are ignored.
 
@@ -57,6 +61,14 @@ The token is intended for immediate connection to Deepgram's `/v1/listen` WebSoc
 new connections but does not terminate an established stream. P1-13 owns native consent and meeting
 linkage. P6-05 owns durable usage metering and abuse limits.
 
+`PUT /v1/transcript/segments:batch` accepts exact workspace and meeting UUIDs plus one to 100
+segments. Each segment contains its stable UUID, channel, non-empty text, monotonic millisecond range,
+finality, and positive revision. Duplicate segment IDs, extra fields, oversized text, and invalid
+ranges are rejected before database access. The backend forwards the already verified user JWT to
+Supabase with the publishable key, so table RLS remains authoritative. The response is
+`{"accepted":<count>}`. An accepted count includes idempotent replays and stale revisions that the
+database safely leaves unchanged.
+
 Errors use `{"error":{"code":"<CODE>","message":"<GENERIC_MESSAGE>"},"requestId":"<UUID>"}`:
 
 - `401 UNAUTHORIZED`: missing, malformed, expired, or rejected credentials, including verifier failures. Includes `WWW-Authenticate: Bearer`.
@@ -64,6 +76,8 @@ Errors use `{"error":{"code":"<CODE>","message":"<GENERIC_MESSAGE>"},"requestId"
 - `403 ENTITLEMENT_REQUIRED`: the authenticated account is not allowed to use STT.
 - `409 CONSENT_REQUIRED`: the exact positive consent assertion is absent.
 - `503 STT_UNAVAILABLE`: Deepgram is unconfigured, unreachable, rejects the server key, or returns an invalid response.
+- `400 INVALID_SEGMENT_BATCH`: transcript batch shape, bounds, identity, or revision is invalid.
+- `503 TRANSCRIPT_SYNC_UNAVAILABLE`: the Data API adapter is unconfigured, unreachable, or rejects the write.
 - `404 NOT_FOUND`: unknown route. The requested path is not echoed.
 - `4xx INVALID_REQUEST`: malformed or oversized input. No parser details are returned.
 - `500 INTERNAL_ERROR`: unexpected request failure. No stack trace, provider message, or request content is returned.
@@ -91,6 +105,8 @@ Tests generate local asymmetric key pairs and verify real signed tokens without 
 - [Supabase changelog](https://supabase.com/changelog): reviewed before implementation. The self-hosted issuer-path change is consistent with the explicit `/auth/v1` issuer; no hosted JWT verification change required a different design.
 - [Supabase JWT verification](https://supabase.com/docs/guides/auth/jwts) and [JWT claims](https://supabase.com/docs/guides/auth/jwt-fields): issuer-derived JWKS and claim semantics.
 - [Supabase signing keys](https://supabase.com/docs/guides/auth/signing-keys): supported asymmetric algorithms, discovery caching, and rotation limitations.
+- [Supabase Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security): grants and RLS both govern authenticated Data API access.
+- [Supabase database functions](https://supabase.com/docs/guides/database/functions): invoker-rights functions are the preferred default for RLS-aware RPCs.
 - [Node release status](https://nodejs.org/en/about/previous-releases): Node 24 is LTS; Node 26 is Current.
 - [Fastify server options](https://fastify.dev/docs/latest/Reference/Server/): logging, request IDs, and request limits.
 - [jose verification](https://github.com/panva/jose/blob/main/docs/jwt/verify/functions/jwtVerify.md): signature and claims validation API.

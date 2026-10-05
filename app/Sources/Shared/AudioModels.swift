@@ -106,7 +106,7 @@ public struct AudioFrame: Sendable, Equatable {
     }
 }
 
-public struct TranscriptSegment: Sendable, Identifiable, Equatable {
+public struct TranscriptSegment: Sendable, Identifiable, Equatable, Codable {
     public let id: UUID
     public let meetingID: UUID
     public let channel: AudioChannel
@@ -134,5 +134,31 @@ public struct TranscriptSegment: Sendable, Identifiable, Equatable {
         self.startMilliseconds = startMilliseconds
         self.endMilliseconds = endMilliseconds
         self.isFinal = isFinal
+    }
+}
+
+public struct TranscriptSegmentRevision: Sendable, Identifiable, Equatable {
+    public let segment: TranscriptSegment
+    public let revision: Int
+
+    public var id: UUID {
+        segment.id
+    }
+
+    public init(segment: TranscriptSegment, revision: Int) throws {
+        guard revision > 0 else { throw DomainValidationError.invalidTranscriptRevision }
+        self.segment = segment
+        self.revision = revision
+    }
+}
+
+public struct TranscriptRevisionReference: Sendable, Hashable {
+    public let segmentID: UUID
+    public let revision: Int
+
+    public init(segmentID: UUID, revision: Int) throws {
+        guard revision > 0 else { throw DomainValidationError.invalidTranscriptRevision }
+        self.segmentID = segmentID
+        self.revision = revision
     }
 }

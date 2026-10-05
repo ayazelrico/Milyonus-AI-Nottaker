@@ -21,6 +21,7 @@ public enum DomainValidationError: Error, Sendable, Equatable {
     case emptyAudioFrame
     case incompletePCM16Sample
     case invalidTranscriptRange
+    case invalidTranscriptRevision
     case emptyEmbedding
     case nonFiniteEmbedding
     case invalidCalendarRange
