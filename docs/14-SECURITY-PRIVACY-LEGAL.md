@@ -12,6 +12,9 @@ Reconstructed engineering requirements, not a legal opinion or a claim of compli
   metadata cannot authorize access. A service-role credential is server-only.
 - Ask for meeting consent before capturing either channel or minting a paid STT token. OS permission
   is a separate requirement. Revocation must stop capture and close streams.
+- `POST /v1/stt/token` currently requires an authenticated caller and an exact positive consent
+  assertion. It does not yet persist or independently verify meeting consent. P1-13 must add native
+  consent and meeting linkage before live capture acceptance.
 - Treat transcripts, uploaded docs, and fetched pages as untrusted data. They cannot override system
   prompts or authorize tools. Prompt injection and grounding evaluations are release gates.
 - Real recordings and transcript fixtures never enter the repository. Use synthetic fixtures.
@@ -35,3 +38,6 @@ meeting or transcript content.
 Confirm contracting entity, subprocessors/regions, DPA and retention terms, breach response, consent
 copy, deletion/export behavior, and provider training/ZDR terms. Owner and appropriate legal review
 must resolve these items before any production claims or launch.
+
+The P1-07 entitlement checker is an allow-all stub after authentication. Billing-backed authorization,
+usage limits, and abuse controls remain mandatory before paid STT is exposed publicly.

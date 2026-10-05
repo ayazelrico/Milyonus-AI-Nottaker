@@ -15,6 +15,7 @@ describe('configuration', () => {
       host: '127.0.0.1',
       port: 3000,
       auth: undefined,
+      deepgram: undefined,
     });
   });
 
@@ -35,9 +36,25 @@ describe('configuration', () => {
         audience: auth.AUTH_AUDIENCE,
         jwksUrl: `${auth.AUTH_ISSUER}/.well-known/jwks.json`,
       },
+      deepgram: undefined,
     });
     expect(JSON.stringify(config)).not.toContain('sensitive-fixture');
     expect(Object.isFrozen(config)).toBe(true);
+  });
+
+  it('accepts a Deepgram key without exposing it in configuration errors', () => {
+    const config = parseConfig({ DEEPGRAM_API_KEY: 'valid-deepgram-key-fixture' });
+    expect(config.deepgram).toEqual({ apiKey: 'valid-deepgram-key-fixture' });
+    expect(Object.isFrozen(config.deepgram)).toBe(true);
+
+    for (const DEEPGRAM_API_KEY of ['short', 'contains whitespace fixture']) {
+      expect(() => parseConfig({ DEEPGRAM_API_KEY })).toThrow('DEEPGRAM_API_KEY');
+      try {
+        parseConfig({ DEEPGRAM_API_KEY });
+      } catch (error) {
+        expect(String(error)).not.toContain(DEEPGRAM_API_KEY);
+      }
+    }
   });
 
   it.each(['staging', 'PRODUCTION', 'unknown'])(

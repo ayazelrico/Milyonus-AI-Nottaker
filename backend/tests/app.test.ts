@@ -136,8 +136,134 @@ describe('HTTP foundation', () => {
       });
       expect(() =>
         buildApp(config, { verifyToken: () => Promise.resolve({ id: userId }) }),
-      ).toThrow('Verifier injection is restricted to tests');
+      ).toThrow('Dependency injection is restricted to tests');
     }
+  });
+
+  it('issues a short-lived STT token after auth, consent, and entitlement checks', async () => {
+    const verifyToken = vi.fn().mockResolvedValue({ id: userId });
+    const checkEntitlement = vi.fn().mockResolvedValue(true);
+    const issueSttToken = vi.fn().mockResolvedValue({
+      accessToken: 'header.payload.signature',
+      expiresIn: 30,
+    });
+    const app = track(buildApp(testConfig, { verifyToken, checkEntitlement, issueSttToken }));
+
+    const result = await app.inject({
+      method: 'POST',
+      url: '/v1/stt/token',
+      headers: { authorization: 'Bearer abc.def.ghi' },
+      payload: { consentConfirmed: true },
+    });
+
+    expect(result.statusCode).toBe(200);
+    expect(result.json()).toEqual({
+      provider: 'deepgram',
+      accessToken: 'header.payload.signature',
+      tokenType: 'Bearer',
+      expiresIn: 30,
+    });
+    expect(checkEntitlement).toHaveBeenCalledWith({ id: userId });
+    expect(issueSttToken).toHaveBeenCalledOnce();
+    expect(result.headers['cache-control']).toBe('no-store');
+  });
+
+  it('does not evaluate consent, entitlement, or STT before authentication', async () => {
+    const checkEntitlement = vi.fn().mockResolvedValue(true);
+    const issueSttToken = vi.fn();
+    const app = track(buildApp(testConfig, { checkEntitlement, issueSttToken }));
+    const result = await app.inject({
+      method: 'POST',
+      url: '/v1/stt/token',
+      payload: { consentConfirmed: true },
+    });
+    expect(result.statusCode).toBe(503);
+    expect(result.json()).toMatchObject({ error: { code: 'AUTH_UNAVAILABLE' } });
+    expect(checkEntitlement).not.toHaveBeenCalled();
+    expect(issueSttToken).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    undefined,
+    {},
+    { consentConfirmed: false },
+    { consentConfirmed: true, ignored: true },
+    'true',
+  ])('requires an exact positive consent assertion before entitlement: %j', async (payload) => {
+    const checkEntitlement = vi.fn();
+    const issueSttToken = vi.fn();
+    const app = track(
+      buildApp(testConfig, {
+        verifyToken: () => Promise.resolve({ id: userId }),
+        checkEntitlement,
+        issueSttToken,
+      }),
+    );
+    const result = await app.inject({
+      method: 'POST',
+      url: '/v1/stt/token',
+      headers:
+        payload === undefined
+          ? { authorization: 'Bearer abc.def.ghi' }
+          : {
+              authorization: 'Bearer abc.def.ghi',
+              'content-type': 'application/json',
+            },
+      ...(payload === undefined ? {} : { payload }),
+    });
+    expect(result.statusCode).toBe(409);
+    expect(result.json()).toMatchObject({ error: { code: 'CONSENT_REQUIRED' } });
+    expect(checkEntitlement).not.toHaveBeenCalled();
+    expect(issueSttToken).not.toHaveBeenCalled();
+  });
+
+  it('rejects an account without entitlement before contacting the STT provider', async () => {
+    const issueSttToken = vi.fn();
+    const app = track(
+      buildApp(testConfig, {
+        verifyToken: () => Promise.resolve({ id: userId }),
+        checkEntitlement: () => Promise.resolve(false),
+        issueSttToken,
+      }),
+    );
+    const result = await app.inject({
+      method: 'POST',
+      url: '/v1/stt/token',
+      headers: { authorization: 'Bearer abc.def.ghi' },
+      payload: { consentConfirmed: true },
+    });
+    expect(result.statusCode).toBe(403);
+    expect(result.json()).toMatchObject({ error: { code: 'ENTITLEMENT_REQUIRED' } });
+    expect(issueSttToken).not.toHaveBeenCalled();
+  });
+
+  it('returns a redacted unavailable response when STT is unconfigured or fails', async () => {
+    const providerError = 'private-provider-fixture';
+    const events: OperationalEvent[] = [];
+    const baseDependencies = {
+      verifyToken: () => Promise.resolve({ id: userId }),
+      emit: (event: OperationalEvent) => events.push(event),
+    };
+    const unconfigured = track(buildApp(testConfig, baseDependencies));
+    const failed = track(
+      buildApp(testConfig, {
+        ...baseDependencies,
+        issueSttToken: () => Promise.reject(new Error(providerError)),
+      }),
+    );
+    const options = {
+      method: 'POST' as const,
+      url: '/v1/stt/token',
+      headers: { authorization: 'Bearer abc.def.ghi' },
+      payload: { consentConfirmed: true },
+    };
+    const unconfiguredResult = await unconfigured.inject(options);
+    const failedResult = await failed.inject(options);
+    expect(unconfiguredResult.statusCode).toBe(503);
+    expect(failedResult.statusCode).toBe(503);
+    expect(unconfiguredResult.json()).toMatchObject({ error: { code: 'STT_UNAVAILABLE' } });
+    expect(failedResult.json()).toMatchObject({ error: { code: 'STT_UNAVAILABLE' } });
+    expect(failedResult.body + JSON.stringify(events)).not.toContain(providerError);
   });
 
   it('redacts thrown errors, request content and client-provided request IDs', async () => {

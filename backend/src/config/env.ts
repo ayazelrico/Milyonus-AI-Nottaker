@@ -8,11 +8,16 @@ export interface AuthConfig {
   readonly jwksUrl: string;
 }
 
+export interface DeepgramConfig {
+  readonly apiKey: string;
+}
+
 export interface AppConfig {
   readonly environment: Environment;
   readonly host: string;
   readonly port: number;
   readonly auth: AuthConfig | undefined;
+  readonly deepgram: DeepgramConfig | undefined;
 }
 
 export class ConfigurationError extends Error {
@@ -68,6 +73,20 @@ function authConfig(env: EnvironmentValues, environment: Environment): AuthConfi
   });
 }
 
+function deepgramConfig(env: EnvironmentValues): DeepgramConfig | undefined {
+  const apiKey = value(env, 'DEEPGRAM_API_KEY');
+  if (apiKey === undefined) return undefined;
+  const hasUnsafeCharacter = Array.from(apiKey).some((character) => {
+    const codePoint = character.codePointAt(0) ?? 0;
+    return codePoint <= 32 || codePoint === 127;
+  });
+  if (apiKey.length < 16 || apiKey.length > 512 || hasUnsafeCharacter) {
+    throw new ConfigurationError('DEEPGRAM_API_KEY');
+  }
+
+  return Object.freeze({ apiKey });
+}
+
 /** Pure parsing only. Loading .env.local belongs to the process entry point. */
 export function parseConfig(env: EnvironmentValues): AppConfig {
   const environment = value(env, 'NODE_ENV') ?? 'development';
@@ -89,5 +108,6 @@ export function parseConfig(env: EnvironmentValues): AppConfig {
     host,
     port,
     auth: authConfig(env, environment as Environment),
+    deepgram: deepgramConfig(env),
   });
 }
