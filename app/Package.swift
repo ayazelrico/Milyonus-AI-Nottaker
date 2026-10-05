@@ -12,10 +12,12 @@ let package = Package(
         .library(name: "AudioCapture", targets: ["AudioCapture"]),
         .library(name: "Permissions", targets: ["Permissions"]),
         .library(name: "Transcription", targets: ["Transcription"]),
+        .library(name: "Persistence", targets: ["Persistence"]),
         .executable(name: "MilyonusApp", targets: ["MilyonusApp"]),
     ],
     dependencies: [
         .package(url: "https://github.com/supabase/supabase-swift.git", exact: "2.55.3"),
+        .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.11.1"),
     ],
     targets: [
         .target(
@@ -35,6 +37,10 @@ let package = Package(
         ),
         .target(name: "Permissions", dependencies: ["Shared"]),
         .target(name: "Transcription", dependencies: ["Shared"]),
+        .target(
+            name: "Persistence",
+            dependencies: ["Shared", .product(name: "GRDB", package: "GRDB.swift")]
+        ),
         .executableTarget(
             name: "MilyonusApp",
             dependencies: ["Shared", "DesignSystem", "Authentication", "AudioCapture", "Permissions"]
@@ -48,6 +54,7 @@ let package = Package(
         .testTarget(name: "AudioCaptureTests", dependencies: ["AudioCapture", "Shared"]),
         .testTarget(name: "PermissionsTests", dependencies: ["Permissions", "Shared"]),
         .testTarget(name: "TranscriptionTests", dependencies: ["Transcription", "Shared"]),
+        .testTarget(name: "PersistenceTests", dependencies: ["Persistence", "Shared"]),
     ],
     swiftLanguageModes: [.v6]
 )

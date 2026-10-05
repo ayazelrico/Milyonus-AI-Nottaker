@@ -202,7 +202,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      upsert_transcript_segments: {
+        Args: {
+          p_meeting_id: string
+          p_segments: Json
+          p_workspace_id: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never

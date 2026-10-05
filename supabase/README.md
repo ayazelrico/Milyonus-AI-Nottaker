@@ -4,6 +4,10 @@ The dedicated development project is `Milyonus AI Nottaker Development` in Frank
 (`eu-central-1`). Its non-secret project reference is `qfjrhbzxjxavzyvrvtiv` and API URL is
 `https://qfjrhbzxjxavzyvrvtiv.supabase.co`.
 
+The applied schema includes the authenticated `upsert_transcript_segments` RPC. It runs with invoker
+rights, derives ownership from `auth.uid()`, and keeps the existing transcript table RLS policies in
+force for batch writes.
+
 The repository contains migration history and transactional RLS verification under `migrations/`
 and `tests/`. Apply schema changes as named migrations, run the isolation test against an isolated
 development database, then run Supabase security and performance advisors. Test fixtures are

@@ -5,7 +5,8 @@ Read [../AGENTS.md](../AGENTS.md) first. The root file owns repository rules.
 The app is a macOS 14+ Swift 6 package. `Shared` owns Sendable domain values and external-service
 protocols. `DesignSystem` owns visual tokens and components. `MilyonusApp` is the composition root.
 Add feature targets only when they have real behavior; keep service implementations behind Shared
-protocols. Enable strict concurrency through Swift 6 language mode.
+protocols. Enable strict concurrency through Swift 6 language mode. Persistence owns encrypted GRDB
+transcript storage and backend outbox synchronization.
 
 Use `AppStrings.text(_:language:)` for visible copy. English is the default. Add English and Turkish
 strings to `Sources/Shared/Resources/Localizable.xcstrings`, then run

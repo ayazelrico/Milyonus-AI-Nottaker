@@ -16,6 +16,7 @@ describe('configuration', () => {
       port: 3000,
       auth: undefined,
       deepgram: undefined,
+      supabaseData: undefined,
     });
   });
 
@@ -37,6 +38,7 @@ describe('configuration', () => {
         jwksUrl: `${auth.AUTH_ISSUER}/.well-known/jwks.json`,
       },
       deepgram: undefined,
+      supabaseData: undefined,
     });
     expect(JSON.stringify(config)).not.toContain('sensitive-fixture');
     expect(Object.isFrozen(config)).toBe(true);
@@ -54,6 +56,37 @@ describe('configuration', () => {
       } catch (error) {
         expect(String(error)).not.toContain(DEEPGRAM_API_KEY);
       }
+    }
+  });
+
+  it('accepts a complete Supabase Data API configuration and rejects partial or unsafe values', () => {
+    const config = parseConfig({
+      SUPABASE_URL: 'https://project.supabase.co',
+      SUPABASE_PUBLISHABLE_KEY: 'publishable-key-fixture-value',
+    });
+    expect(config.supabaseData).toEqual({
+      url: 'https://project.supabase.co',
+      publishableKey: 'publishable-key-fixture-value',
+    });
+    expect(Object.isFrozen(config.supabaseData)).toBe(true);
+
+    expect(() => parseConfig({ SUPABASE_URL: 'https://project.supabase.co' })).toThrow(
+      'SUPABASE_PUBLISHABLE_KEY',
+    );
+    expect(() =>
+      parseConfig({ SUPABASE_PUBLISHABLE_KEY: 'publishable-key-fixture-value' }),
+    ).toThrow('SUPABASE_URL');
+    for (const SUPABASE_URL of [
+      'http://project.supabase.co',
+      'https://project.supabase.co/rest/v1',
+      'https://name:private-fixture@project.supabase.co',
+    ]) {
+      expect(() =>
+        parseConfig({
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY: 'publishable-key-fixture-value',
+        }),
+      ).toThrow('SUPABASE_URL');
     }
   });
 

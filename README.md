@@ -15,10 +15,12 @@ This repository is the **Phase 0 foundation**. It is not a production recording 
   server-only Deepgram adapter that returns 30-second access tokens.
 - Native Supabase PKCE authentication foundation with Magic Link, Apple/Google entry points,
   Keychain-backed sessions, strict callback validation, and optional backend identity confirmation.
-- Dedicated Supabase development schema with workspace RLS, transactional isolation tests, and
-  generated backend types. It is not connected to the application yet.
+- Dedicated Supabase development schema with workspace RLS, transactional isolation tests, generated
+  backend types, and an optional authenticated transcript batch adapter.
 - Native Deepgram streaming client with per-channel WebSockets, interim/final transcript events,
   keepalive, bounded reconnect backoff, cancellation, and fresh tokens on reconnect.
+- Revision-aware transcript assembly, AES-GCM encrypted GRDB persistence, a durable local outbox, and
+  an authenticated RLS-protected batch upload path.
 - Repository-local development tools, reproducible resources, signed local preview packaging, and CI.
 
 Live meeting UI wiring, AI suggestions, cloud storage, calendar, and subscriptions are upcoming phases.
@@ -67,7 +69,7 @@ See [verification report](docs/reports/foundation-verification.md) for actual re
 ## Architecture and planning
 
 `app/` contains a SwiftPM package with Shared, DesignSystem, Authentication, AudioCapture,
-Permissions, Transcription, and MilyonusApp. Feature
+Permissions, Transcription, Persistence, and MilyonusApp. Feature
 targets are added when they own tested behavior. `backend/` contains Fastify/TypeScript services. Provider credentials
 stay on the backend; future direct STT streaming uses short-lived backend-issued tokens.
 

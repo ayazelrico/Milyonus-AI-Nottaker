@@ -266,6 +266,108 @@ describe('HTTP foundation', () => {
     expect(failedResult.body + JSON.stringify(events)).not.toContain(providerError);
   });
 
+  it('validates and persists an authenticated transcript segment batch', async () => {
+    const writeTranscriptSegments = vi.fn().mockResolvedValue(1);
+    const app = track(
+      buildApp(testConfig, {
+        verifyToken: () => Promise.resolve({ id: userId }),
+        writeTranscriptSegments,
+      }),
+    );
+    const payload = {
+      workspaceId: '5b375821-c493-45bc-82f8-608e35ca3e24',
+      meetingId: '07602822-09c1-4bed-b476-993b21671f94',
+      segments: [
+        {
+          id: '4587cc56-a7f8-413e-9074-a6189d312021',
+          channel: 'microphone',
+          text: 'private transcript fixture',
+          startMilliseconds: 10,
+          endMilliseconds: 20,
+          isFinal: true,
+          revision: 2,
+        },
+      ],
+    };
+    const result = await app.inject({
+      method: 'PUT',
+      url: '/v1/transcript/segments:batch',
+      headers: { authorization: 'Bearer abc.def.ghi' },
+      payload,
+    });
+    expect(result.statusCode).toBe(200);
+    expect(result.json()).toEqual({ accepted: 1 });
+    expect(writeTranscriptSegments).toHaveBeenCalledWith({ id: userId }, 'abc.def.ghi', payload);
+  });
+
+  it('rejects malformed or duplicate transcript segments before persistence', async () => {
+    const writeTranscriptSegments = vi.fn();
+    const app = track(
+      buildApp(testConfig, {
+        verifyToken: () => Promise.resolve({ id: userId }),
+        writeTranscriptSegments,
+      }),
+    );
+    const segment = {
+      id: '4587cc56-a7f8-413e-9074-a6189d312021',
+      channel: 'microphone',
+      text: 'fixture',
+      startMilliseconds: 10,
+      endMilliseconds: 20,
+      isFinal: true,
+      revision: 1,
+    };
+    const result = await app.inject({
+      method: 'PUT',
+      url: '/v1/transcript/segments:batch',
+      headers: { authorization: 'Bearer abc.def.ghi' },
+      payload: {
+        workspaceId: '5b375821-c493-45bc-82f8-608e35ca3e24',
+        meetingId: '07602822-09c1-4bed-b476-993b21671f94',
+        segments: [segment, segment],
+      },
+    });
+    expect(result.statusCode).toBe(400);
+    expect(result.json()).toMatchObject({ error: { code: 'INVALID_SEGMENT_BATCH' } });
+    expect(writeTranscriptSegments).not.toHaveBeenCalled();
+  });
+
+  it('redacts transcript persistence failures', async () => {
+    const events: OperationalEvent[] = [];
+    const app = track(
+      buildApp(testConfig, {
+        verifyToken: () => Promise.resolve({ id: userId }),
+        emit: (event) => events.push(event),
+        writeTranscriptSegments: () => Promise.reject(new Error('private-provider-fixture')),
+      }),
+    );
+    const result = await app.inject({
+      method: 'PUT',
+      url: '/v1/transcript/segments:batch',
+      headers: { authorization: 'Bearer abc.def.ghi' },
+      payload: {
+        workspaceId: '5b375821-c493-45bc-82f8-608e35ca3e24',
+        meetingId: '07602822-09c1-4bed-b476-993b21671f94',
+        segments: [
+          {
+            id: '4587cc56-a7f8-413e-9074-a6189d312021',
+            channel: 'system',
+            text: 'private transcript fixture',
+            startMilliseconds: 0,
+            endMilliseconds: 1,
+            isFinal: false,
+            revision: 1,
+          },
+        ],
+      },
+    });
+    expect(result.statusCode).toBe(503);
+    expect(result.json()).toMatchObject({
+      error: { code: 'TRANSCRIPT_SYNC_UNAVAILABLE' },
+    });
+    expect(result.body + JSON.stringify(events)).not.toContain('private-');
+  });
+
   it('redacts thrown errors, request content and client-provided request IDs', async () => {
     const events: OperationalEvent[] = [];
     const app = track(buildApp(testConfig, { emit: (event) => events.push(event) }));

@@ -12,12 +12,18 @@ export interface DeepgramConfig {
   readonly apiKey: string;
 }
 
+export interface SupabaseDataConfig {
+  readonly url: string;
+  readonly publishableKey: string;
+}
+
 export interface AppConfig {
   readonly environment: Environment;
   readonly host: string;
   readonly port: number;
   readonly auth: AuthConfig | undefined;
   readonly deepgram: DeepgramConfig | undefined;
+  readonly supabaseData: SupabaseDataConfig | undefined;
 }
 
 export class ConfigurationError extends Error {
@@ -87,6 +93,42 @@ function deepgramConfig(env: EnvironmentValues): DeepgramConfig | undefined {
   return Object.freeze({ apiKey });
 }
 
+function supabaseDataConfig(env: EnvironmentValues): SupabaseDataConfig | undefined {
+  const configuredUrl = value(env, 'SUPABASE_URL');
+  const publishableKey = value(env, 'SUPABASE_PUBLISHABLE_KEY');
+  if (configuredUrl === undefined && publishableKey === undefined) {
+    return undefined;
+  }
+  if (configuredUrl === undefined) throw new ConfigurationError('SUPABASE_URL');
+  if (publishableKey === undefined) throw new ConfigurationError('SUPABASE_PUBLISHABLE_KEY');
+
+  let url: URL;
+  try {
+    url = new URL(configuredUrl);
+  } catch {
+    throw new ConfigurationError('SUPABASE_URL');
+  }
+  if (
+    url.protocol !== 'https:' ||
+    url.username !== '' ||
+    url.password !== '' ||
+    url.pathname !== '/' ||
+    url.search !== '' ||
+    url.hash !== '' ||
+    url.href !== `${url.origin}/`
+  ) {
+    throw new ConfigurationError('SUPABASE_URL');
+  }
+  const hasUnsafeKeyCharacter = Array.from(publishableKey).some((character) => {
+    const codePoint = character.codePointAt(0) ?? 0;
+    return codePoint <= 32 || codePoint === 127;
+  });
+  if (publishableKey.length < 20 || publishableKey.length > 2048 || hasUnsafeKeyCharacter) {
+    throw new ConfigurationError('SUPABASE_PUBLISHABLE_KEY');
+  }
+  return Object.freeze({ url: url.origin, publishableKey });
+}
+
 /** Pure parsing only. Loading .env.local belongs to the process entry point. */
 export function parseConfig(env: EnvironmentValues): AppConfig {
   const environment = value(env, 'NODE_ENV') ?? 'development';
@@ -109,5 +151,6 @@ export function parseConfig(env: EnvironmentValues): AppConfig {
     port,
     auth: authConfig(env, environment as Environment),
     deepgram: deepgramConfig(env),
+    supabaseData: supabaseDataConfig(env),
   });
 }

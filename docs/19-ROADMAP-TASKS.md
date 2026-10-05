@@ -40,7 +40,7 @@ Acceptance: 30-minute meeting captured on both channels, live EN/TR transcript, 
 - [x] P1-07 Backend `POST /v1/stt/token` with Deepgram adapter (short-lived tokens), entitlement stub
 - [x] P1-08 STT client: WebSocket session per channel, events, reconnect/backoff, token refresh
 - [ ] P1-09 Bake-off: Deepgram vs AssemblyAI on 10 recordings (EN/TR); report in `docs/reports/stt-bakeoff.md`; pick primary; implement secondary adapter
-- [ ] P1-10 `SegmentAssembler`, `TranscriptStore` actor, local persistence (GRDB, encrypted text), outbox + `PUT segments:batch`
+- [x] P1-10 `SegmentAssembler`, `TranscriptStore` actor, local persistence (GRDB, encrypted text), outbox + `PUT segments:batch`
 - [ ] P1-11 Local rolling audio buffer + backfill after network drop
 - [ ] P1-12 Minimal live transcript window + menu bar start/stop + listening indicator
 - [ ] P1-13 Consent sheet v0 and `consent_confirmed` plumbing (required by `stt/token`)
