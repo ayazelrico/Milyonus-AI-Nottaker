@@ -11,13 +11,15 @@ This repository is the **Phase 0 foundation**. It is not a production recording 
 - Shared service contracts, input validation, consent/readiness state transitions, and localization.
 - Native DesignSystem with five base components and a debug-only component Gallery.
 - Fastify backend with public health, fail-closed JWT-protected identity, and metadata-only logging.
+- Authenticated STT token minting with explicit consent assertion, an entitlement boundary, and a
+  server-only Deepgram adapter that returns 30-second access tokens.
 - Native Supabase PKCE authentication foundation with Magic Link, Apple/Google entry points,
   Keychain-backed sessions, strict callback validation, and optional backend identity confirmation.
 - Dedicated Supabase development schema with workspace RLS, transactional isolation tests, and
   generated backend types. It is not connected to the application yet.
 - Repository-local development tools, reproducible resources, signed local preview packaging, and CI.
 
-Audio capture, STT, AI suggestions, cloud storage, calendar, and subscriptions are upcoming phases.
+Live STT streaming, AI suggestions, cloud storage, calendar, and subscriptions are upcoming phases.
 Authentication still needs one real acceptance sign-in. The sample summary is synthetic and is never
 presented as generated output.
 

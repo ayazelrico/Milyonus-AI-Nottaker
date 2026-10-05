@@ -1,7 +1,7 @@
 # 12 - Backend API
 
-Status: Phase 0 local backend foundation. A dedicated empty Supabase development database is
-provisioned, but the backend is not deployed or connected to it yet.
+Status: Phase 1 local backend. A dedicated empty Supabase development database is provisioned, but
+the backend is not deployed or connected to it yet.
 
 ## Runtime and commands
 
@@ -22,10 +22,12 @@ The application factory does not load files or open a listening socket. The proc
 | `PORT` | `3000` by default; an integer from 1 through 65535. |
 | `AUTH_ISSUER` | Exact HTTPS issuer ending in `/auth/v1`, without trailing slash, credentials, query, or fragment. |
 | `AUTH_AUDIENCE` | Exact expected audience, normally `authenticated`. |
+| `DEEPGRAM_API_KEY` | Optional server-only API key used to mint temporary STT tokens. Must never enter app configuration. |
 
-Both auth fields may be absent during local development, which keeps liveness available and authentication unavailable. Partial configuration always fails startup. Production requires both fields. The JWKS URL is derived from the trusted issuer by appending `/.well-known/jwks.json`; a request cannot select the issuer or keys. Provider secrets are reserved in the empty template but are not required, exposed, or consumed by Phase 0.
+Both auth fields may be absent during local development, which keeps liveness available and authentication unavailable. Partial configuration always fails startup. Production requires both fields. The JWKS URL is derived from the trusted issuer by appending `/.well-known/jwks.json`; a request cannot select the issuer or keys. The backend can start without `DEEPGRAM_API_KEY`; the STT token route then returns `503 STT_UNAVAILABLE`. The key is consumed only by the Deepgram adapter and is never returned or logged. Other provider secrets remain reserved in the empty template.
 
-Model identifiers are centralized in `backend/src/config/models.ts`. Provider integration and prompts are not implemented in this phase.
+Model identifiers are centralized in `backend/src/config/models.ts`. The only provider integration is
+the Deepgram temporary-token adapter. STT streaming, LLM calls, and prompts are not implemented here.
 
 ## Endpoints
 
@@ -33,13 +35,35 @@ Model identifiers are centralized in `backend/src/config/models.ts`. Provider in
 | --- | --- | --- |
 | `GET /health` | Public | `200 {"status":"ok"}`. Liveness only; this is not a database/provider readiness check. |
 | `GET /v1/me` | Valid access token | `200 {"user":{"id":"<UUID>"}}`. No profile, email, workspace, subscription, or credential data. |
+| `POST /v1/stt/token` | Valid access token, consent assertion, entitlement | Returns a 30-second Deepgram bearer token for direct STT connection setup. |
 
 Protected requests carry exactly one `Authorization: Bearer <JWT>` header. Duplicate raw headers are rejected as a malformed request before verification. Tokens in cookies or query strings are not accepted. Responses have `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`, and a server-generated `X-Request-Id`. Client request IDs are ignored.
+
+`POST /v1/stt/token` accepts only `{"consentConfirmed":true}`. Extra fields, a missing body, or any
+other consent value return `409 CONSENT_REQUIRED` before entitlement or provider work. The Phase 1
+entitlement stub allows every authenticated non-anonymous user and exists as a replaceable boundary;
+P6-04 replaces it with subscription authorization. A successful response is:
+
+```json
+{
+  "provider": "deepgram",
+  "accessToken": "<temporary JWT>",
+  "tokenType": "Bearer",
+  "expiresIn": 30
+}
+```
+
+The token is intended for immediate connection to Deepgram's `/v1/listen` WebSocket. Expiry prevents
+new connections but does not terminate an established stream. P1-13 owns native consent and meeting
+linkage. P6-05 owns durable usage metering and abuse limits.
 
 Errors use `{"error":{"code":"<CODE>","message":"<GENERIC_MESSAGE>"},"requestId":"<UUID>"}`:
 
 - `401 UNAUTHORIZED`: missing, malformed, expired, or rejected credentials, including verifier failures. Includes `WWW-Authenticate: Bearer`.
 - `503 AUTH_UNAVAILABLE`: local authentication configuration is absent.
+- `403 ENTITLEMENT_REQUIRED`: the authenticated account is not allowed to use STT.
+- `409 CONSENT_REQUIRED`: the exact positive consent assertion is absent.
+- `503 STT_UNAVAILABLE`: Deepgram is unconfigured, unreachable, rejects the server key, or returns an invalid response.
 - `404 NOT_FOUND`: unknown route. The requested path is not echoed.
 - `4xx INVALID_REQUEST`: malformed or oversized input. No parser details are returned.
 - `500 INTERNAL_ERROR`: unexpected request failure. No stack trace, provider message, or request content is returned.
@@ -62,7 +86,7 @@ The local HTTP listener binds to loopback by default. Production deployment must
 
 Tests generate local asymmetric key pairs and verify real signed tokens without external network requests. They cover issuer/audience/signature failures, expiry and required claims, anonymous and privileged roles, both supported signing algorithms, unsupported symmetric/unsigned tokens, missing configuration, production guardrails, header parsing, route behavior, and error/log redaction. Key discovery tests intercept fetch to verify trusted URL selection, caching, and unavailable-provider rejection. A loopback HTTP test checks duplicate raw Authorization headers through Node's real parser. Tests do not read `.env.local` or use real credentials.
 
-## Provider references verified 2026-10-02
+## Provider references verified 2026-10-05
 
 - [Supabase changelog](https://supabase.com/changelog): reviewed before implementation. The self-hosted issuer-path change is consistent with the explicit `/auth/v1` issuer; no hosted JWT verification change required a different design.
 - [Supabase JWT verification](https://supabase.com/docs/guides/auth/jwts) and [JWT claims](https://supabase.com/docs/guides/auth/jwt-fields): issuer-derived JWKS and claim semantics.
@@ -70,3 +94,8 @@ Tests generate local asymmetric key pairs and verify real signed tokens without 
 - [Node release status](https://nodejs.org/en/about/previous-releases): Node 24 is LTS; Node 26 is Current.
 - [Fastify server options](https://fastify.dev/docs/latest/Reference/Server/): logging, request IDs, and request limits.
 - [jose verification](https://github.com/panva/jose/blob/main/docs/jwt/verify/functions/jwtVerify.md): signature and claims validation API.
+- [Deepgram token-based authentication](https://developers.deepgram.com/guides/fundamentals/token-based-authentication):
+  `POST /v1/auth/grant`, `ttl_seconds`, response fields, 30-second default, 3600-second maximum,
+  bearer use, and connection behavior after expiry.
+- [Deepgram live audio](https://developers.deepgram.com/reference/speech-to-text/listen-streaming):
+  temporary bearer-token authentication for the `/v1/listen` WebSocket.
