@@ -73,6 +73,25 @@ struct DualChannelAudioMixerTests {
         await mixer.stop()
     }
 
+    @Test func feedsRollingBufferWhileDeliveringMixedFrames() async throws {
+        let microphone = ControlledAudioSource(channel: .microphone)
+        let system = ControlledAudioSource(channel: .system)
+        let rollingBuffer = RollingAudioBuffer()
+        let mixer = DualChannelAudioMixer(
+            microphoneSource: microphone,
+            systemSource: system,
+            rollingBuffer: rollingBuffer
+        )
+        let stream = try await mixer.start()
+        var iterator = stream.makeAsyncIterator()
+        let frame = try frame(channel: .microphone, timestamp: 1_000_000_000)
+
+        microphone.emit(frame)
+        #expect(try await iterator.next() == frame)
+        #expect(await rollingBuffer.frames(after: 0, channel: .microphone) == [frame])
+        await mixer.stop()
+    }
+
     @Test func rejectsSecondSessionAndStopsBothSourcesTogether() async throws {
         let microphone = ControlledAudioSource(channel: .microphone)
         let system = ControlledAudioSource(channel: .system)

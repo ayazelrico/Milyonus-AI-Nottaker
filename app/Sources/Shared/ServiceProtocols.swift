@@ -18,6 +18,16 @@ public protocol AudioCaptureMetricsService: Sendable {
     func captureMetrics() async -> AudioCaptureMetrics
 }
 
+public protocol AudioRollingBuffer: Sendable {
+    func append(_ frame: AudioFrame) async
+    func frames(
+        after timestampNanoseconds: UInt64,
+        channel: AudioChannel
+    ) async -> [AudioFrame]
+    func reset() async
+    func metrics() async -> AudioRollingBufferMetrics
+}
+
 public protocol AudioMixerService: Sendable {
     func start() async throws -> AsyncThrowingStream<AudioFrame, Error>
     func stop() async
