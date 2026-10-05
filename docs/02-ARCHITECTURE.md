@@ -18,10 +18,11 @@ stream; metering and session limits must be enforced separately before paid usag
 | Authentication | Shared, pinned Supabase Auth SDK | PKCE sign-in, Keychain session, backend identity check |
 | AudioCapture | Shared, Apple audio frameworks | Mic/system sources, conversion, bounded streams, synchronization |
 | Permissions | Shared, native system frameworks | Explicit permission state, requests, settings, restart handling |
+| Transcription | Shared, Foundation networking | Backend token client, provider WebSocket adapter, transcript events, reconnect lifecycle |
 | MilyonusApp | Shared, DesignSystem, Authentication, Permissions | Composition root, windows, menu bar, sample workspace, settings |
 
-Add Transcription, InsightEngine, KnowledgeBase, PostMeeting, CalendarIntegration,
-Persistence, and Billing targets when each receives tested behavior. Do not create
+Add InsightEngine, KnowledgeBase, PostMeeting, CalendarIntegration, Persistence, and Billing targets
+when each receives tested behavior. Do not create
 empty packages and tests merely to simulate implementation. Feature modules may depend on Shared
 and DesignSystem; they cannot import each other. Only MilyonusApp wires implementations together.
 

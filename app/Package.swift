@@ -11,6 +11,7 @@ let package = Package(
         .library(name: "Authentication", targets: ["Authentication"]),
         .library(name: "AudioCapture", targets: ["AudioCapture"]),
         .library(name: "Permissions", targets: ["Permissions"]),
+        .library(name: "Transcription", targets: ["Transcription"]),
         .executable(name: "MilyonusApp", targets: ["MilyonusApp"]),
     ],
     dependencies: [
@@ -33,6 +34,7 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(name: "Permissions", dependencies: ["Shared"]),
+        .target(name: "Transcription", dependencies: ["Shared"]),
         .executableTarget(
             name: "MilyonusApp",
             dependencies: ["Shared", "DesignSystem", "Authentication", "AudioCapture", "Permissions"]
@@ -45,6 +47,7 @@ let package = Package(
         ),
         .testTarget(name: "AudioCaptureTests", dependencies: ["AudioCapture", "Shared"]),
         .testTarget(name: "PermissionsTests", dependencies: ["Permissions", "Shared"]),
+        .testTarget(name: "TranscriptionTests", dependencies: ["Transcription", "Shared"]),
     ],
     swiftLanguageModes: [.v6]
 )
