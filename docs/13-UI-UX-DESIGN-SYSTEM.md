@@ -35,3 +35,8 @@ permission state and capture state separately. The live overlay is a non-activat
 drag/resize, dismiss/pin/copy, rate-limited cards, and explicit capture status. Overlay behavior,
 shortcuts, and supported full-screen cases require a Phase 2 spec and tests. Do not claim universal
 screen-share invisibility. Post-meeting editing and KB upload land in their phases.
+
+P1-12 adds the native live meeting workspace and menu bar start/stop controls. The view renders
+interim and final transcript segments with timestamps and a listening status indicator. Controls are
+disabled until consent and injectable capture/transcription services are ready; the local preview
+does not request permissions or record. The floating insight overlay remains a Phase 2 feature.

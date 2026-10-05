@@ -2119,6 +2119,69 @@
         "tr": { "stringUnit": { "state": "translated", "value": "Tekrar başarısız oldu" } }
       }
     }
+    ,"LIVE MEETING": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "LIVE MEETING" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "CANLI TOPLANTI" } }
+      }
+    },
+    "Live transcript": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Live transcript" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Canlı döküm" } }
+      }
+    },
+    "Follow the conversation as it happens.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Follow the conversation as it happens." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Konuşmayı gerçekleşirken takip edin." } }
+      }
+    },
+    "Stop recording": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Stop recording" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Kaydı durdur" } }
+      }
+    },
+    "Listening": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Listening" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Dinleniyor" } }
+      }
+    },
+    "Starting recording": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Starting recording" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Kayıt başlatılıyor" } }
+      }
+    },
+    "Stopping recording": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Stopping recording" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Kayıt durduruluyor" } }
+      }
+    },
+    "Recording unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Recording unavailable" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Kayıt kullanılamıyor" } }
+      }
+    },
+    "Ready to record": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Ready to record" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Kayıta hazır" } }
+      }
+    }
   },
   "version": "1.0"
 }

@@ -29,6 +29,7 @@ struct MilyonusApp: App {
     @State private var preferences = AppPreferences()
     @State private var authentication = AuthenticationCoordinator()
     @State private var permissions = PermissionCoordinator()
+    @State private var liveMeeting = LiveMeetingCoordinator()
     #if DEBUG
         @State private var replay = ReplayCoordinator()
     #endif
@@ -67,7 +68,8 @@ struct MilyonusApp: App {
             WorkspaceView(
                 preferences: preferences,
                 authentication: authentication,
-                permissions: permissions
+                permissions: permissions,
+                liveMeeting: liveMeeting
             )
             .preferredColorScheme(.dark)
             .tint(DesignTokens.Palette.brand)
@@ -101,7 +103,7 @@ struct MilyonusApp: App {
         }
 
         MenuBarExtra("Milyonus Nottaker", systemImage: "waveform") {
-            MenuBarContent(preferences: preferences)
+            MenuBarContent(preferences: preferences, coordinator: liveMeeting)
         }
 
         #if DEBUG
@@ -155,9 +157,19 @@ private struct MenuBarContent: View {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openSettings) private var openSettings
     let preferences: AppPreferences
+    let coordinator: LiveMeetingCoordinator
 
     var body: some View {
-        Text(verbatim: preferences.text("No recording in progress"))
+        DSStatusIndicator(
+            coordinator.isListening ? preferences.text("Listening") : preferences.text("No recording in progress"),
+            tone: coordinator.isListening ? .ready : .neutral
+        )
+        if coordinator.isListening {
+            Button(preferences.text("Stop recording"), systemImage: "stop.fill", action: coordinator.stop)
+        } else {
+            Button(preferences.text("Start recording"), systemImage: "mic", action: { coordinator.start() })
+                .disabled(!coordinator.canStart)
+        }
         Divider()
         Button(preferences.text("Open Milyonus")) {
             openWindow(id: "main")

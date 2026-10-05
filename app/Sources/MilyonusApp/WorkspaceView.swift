@@ -3,6 +3,7 @@ import SwiftUI
 
 enum Destination: String, CaseIterable, Identifiable {
     case workspace = "Workspace"
+    case liveMeeting = "Live meeting"
     case meetings = "Meetings"
     case knowledge = "Knowledge base"
     case settings = "Settings"
@@ -17,6 +18,7 @@ enum Destination: String, CaseIterable, Identifiable {
     var symbol: String {
         switch self {
         case .workspace: "square.grid.2x2"
+        case .liveMeeting: "waveform"
         case .meetings: "text.bubble"
         case .knowledge: "books.vertical"
         case .settings: "slider.horizontal.3"
@@ -31,6 +33,7 @@ struct WorkspaceView: View {
     let preferences: AppPreferences
     let authentication: AuthenticationCoordinator
     let permissions: PermissionCoordinator
+    let liveMeeting: LiveMeetingCoordinator
     @State private var destination = Destination.workspace
     @State private var isShowingSample = false
 
@@ -73,6 +76,7 @@ struct WorkspaceView: View {
                     .padding(.horizontal, DesignTokens.Space.medium)
                     .padding(.bottom, DesignTokens.Space.small)
                 navigationButton(.workspace)
+                navigationButton(.liveMeeting)
                 navigationButton(.meetings)
                 navigationButton(.knowledge)
             }
@@ -142,6 +146,8 @@ struct WorkspaceView: View {
         switch destination {
         case .workspace:
             OverviewView(preferences: preferences, openSample: openSample, openSettings: { destination = .settings })
+        case .liveMeeting:
+            LiveMeetingView(preferences: preferences, coordinator: liveMeeting)
         case .meetings:
             if isShowingSample {
                 SampleMeetingView(preferences: preferences, back: { isShowingSample = false })

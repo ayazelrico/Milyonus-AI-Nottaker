@@ -20,4 +20,5 @@ running a bare SwiftPM executable is not evidence that macOS permission behavior
 
 The workspace displays clearly labeled sample content. Authentication lives in its own target and
 uses Supabase PKCE plus Keychain. AudioCapture, Permissions, and Transcription own tested native
-services but are not yet wired to a live meeting UI. Cloud transcript persistence is not implemented.
+services, and the live meeting UI accepts injected mixer and transcription services. The default
+preview keeps recording unavailable until consent and runtime service wiring are complete.
