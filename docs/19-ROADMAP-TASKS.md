@@ -42,7 +42,7 @@ Acceptance: 30-minute meeting captured on both channels, live EN/TR transcript, 
 - [ ] P1-09 Bake-off: Deepgram vs AssemblyAI on 10 recordings (EN/TR); report in `docs/reports/stt-bakeoff.md`; pick primary; implement secondary adapter
 - [x] P1-10 `SegmentAssembler`, `TranscriptStore` actor, local persistence (GRDB, encrypted text), outbox + `PUT segments:batch`
 - [x] P1-11 Local rolling audio buffer + backfill after network drop
-- [ ] P1-12 Minimal live transcript window + menu bar start/stop + listening indicator
+- [x] P1-12 Minimal live transcript window + menu bar start/stop + listening indicator
 - [ ] P1-13 Consent sheet v0 and `consent_confirmed` plumbing (required by `stt/token`)
 - [ ] P1-14 30-minute soak test (live and replay), performance snapshot
 
