@@ -18,4 +18,8 @@ Private repository checklist containing readiness only. No credentials or person
 - [ ] Sentry scrubbing and opt-in diagnostics are configured before collection.
 - [ ] Calendar OAuth ownership and permissions are approved before integration.
 
+The selected integration order and the exact credential surface are documented in
+`docs/integrations-plan.md`. The owner should provision accounts in that order and place values
+only in ignored `backend/.env.local` or the CI secret store.
+
 The runtime loads secrets by environment variable name. Agents never request keys in chat.
