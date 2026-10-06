@@ -7,6 +7,11 @@ candidates may use the configured Haiku classifier. A context builder applies a 
 window, user style, and token budget. Backend streaming generates concise insight cards with the
 configured primary model and explicit fallback policy.
 
+The first prompt contracts are versioned in `prompts/trigger-classifier.v1.md` and
+`prompts/live-insight.v1.md`, with JSON Schemas beside them. They are drafts for P2-01 until the
+validator, labeled eval set, and provider call path are implemented. No prompt may be promoted to
+production without the corresponding eval run.
+
 Treat all transcript and KB content as untrusted quoted data. It cannot change instructions, invoke
 tools, disclose secrets, or authorize actions. Prompts live in prompts/ with schema and eval version.
 Use cooldowns, deduplication, cancellation, and bounded queues to avoid flooding the overlay.
