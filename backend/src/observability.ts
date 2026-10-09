@@ -5,6 +5,16 @@ export type OperationalEvent =
       readonly event: 'request_failed';
       readonly requestId: string;
       readonly statusCode: number;
+    }
+  | {
+      readonly event: 'llm_completed';
+      readonly requestId: string;
+      readonly durationMilliseconds: number;
+      readonly attempts: number;
+      readonly inputTokens: number;
+      readonly outputTokens: number;
+      readonly cacheReadTokens: number;
+      readonly cacheCreationTokens: number;
     };
 
 export type EventSink = (event: OperationalEvent) => void;
@@ -21,6 +31,18 @@ export const writeOperationalEvent: EventSink = (event) => {
         event: event.event,
         requestId: event.requestId,
         statusCode: event.statusCode,
+      };
+      break;
+    case 'llm_completed':
+      metadata = {
+        event: event.event,
+        requestId: event.requestId,
+        durationMilliseconds: event.durationMilliseconds,
+        attempts: event.attempts,
+        inputTokens: event.inputTokens,
+        outputTokens: event.outputTokens,
+        cacheReadTokens: event.cacheReadTokens,
+        cacheCreationTokens: event.cacheCreationTokens,
       };
       break;
     case 'startup_failed':

@@ -51,8 +51,14 @@ Acceptance: 30-minute meeting captured on both channels, live EN/TR transcript, 
 Acceptance: p90 first card <= 3 s on replay set; <= 2 irrelevant cards / 10 min; eval gates in `07` pass for EN.
 
 - [ ] P2-01 Prompt files v1: trigger classifier + live insight (`prompts/`), schema + validator
+  - Draft prompts, schema-based validators, literal classifier evidence, and empty-citation guards are
+    implemented. Prompt evals and validation tests remain deferred by owner instruction.
 - [ ] P2-02 Backend LLM wrapper (streaming, caching, retries, timeouts, usage), models config
+  - Development Anthropic adapter, static-prefix caching, bounded retry/fallback, cancellation, and
+    usage metadata are implemented. Adapter tests and provider acceptance remain deferred.
 - [ ] P2-03 `POST /v1/insights/stream` SSE (no KB yet) + contract tests
+  - Development-only route with auth/consent/entitlement checks, bounded input/concurrency, progress
+    counts, and validated final cards is implemented. Contract tests and client integration remain.
 - [ ] P2-04 TriggerDetector stage 1 (EN lexicons, TR lexicons), unit tests with labeled set
 - [ ] P2-05 Stage 2 Haiku classifier route + fallback behavior
 - [ ] P2-06 ContextBuilder (window, profile, style) + token budgeting

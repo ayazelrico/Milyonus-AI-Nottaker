@@ -17,6 +17,10 @@ export interface SupabaseDataConfig {
   readonly publishableKey: string;
 }
 
+export interface InsightConfig {
+  readonly apiKey: string;
+}
+
 export interface AppConfig {
   readonly environment: Environment;
   readonly host: string;
@@ -24,6 +28,7 @@ export interface AppConfig {
   readonly auth: AuthConfig | undefined;
   readonly deepgram: DeepgramConfig | undefined;
   readonly supabaseData: SupabaseDataConfig | undefined;
+  readonly insights: InsightConfig | undefined;
 }
 
 export class ConfigurationError extends Error {
@@ -129,6 +134,30 @@ function supabaseDataConfig(env: EnvironmentValues): SupabaseDataConfig | undefi
   return Object.freeze({ url: url.origin, publishableKey });
 }
 
+function insightConfig(
+  env: EnvironmentValues,
+  environment: Environment,
+): InsightConfig | undefined {
+  const enabled = value(env, 'INSIGHTS_DEVELOPMENT_ENABLED');
+  if (enabled === undefined || enabled === 'false') return undefined;
+  if (enabled !== 'true' || environment === 'production') {
+    throw new ConfigurationError('INSIGHTS_DEVELOPMENT_ENABLED');
+  }
+  const apiKey = value(env, 'ANTHROPIC_API_KEY');
+  if (
+    apiKey === undefined ||
+    apiKey.length < 16 ||
+    apiKey.length > 512 ||
+    Array.from(apiKey).some((character) => {
+      const code = character.codePointAt(0) ?? 0;
+      return code <= 32 || code === 127;
+    })
+  ) {
+    throw new ConfigurationError('ANTHROPIC_API_KEY');
+  }
+  return Object.freeze({ apiKey });
+}
+
 /** Pure parsing only. Loading .env.local belongs to the process entry point. */
 export function parseConfig(env: EnvironmentValues): AppConfig {
   const environment = value(env, 'NODE_ENV') ?? 'development';
@@ -152,5 +181,6 @@ export function parseConfig(env: EnvironmentValues): AppConfig {
     auth: authConfig(env, environment as Environment),
     deepgram: deepgramConfig(env),
     supabaseData: supabaseDataConfig(env),
+    insights: insightConfig(env, environment as Environment),
   });
 }
