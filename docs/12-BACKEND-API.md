@@ -24,13 +24,17 @@ The application factory does not load files or open a listening socket. The proc
 | `AUTH_ISSUER` | Exact HTTPS issuer ending in `/auth/v1`, without trailing slash, credentials, query, or fragment. |
 | `AUTH_AUDIENCE` | Exact expected audience, normally `authenticated`. |
 | `DEEPGRAM_API_KEY` | Optional server-only API key used to mint temporary STT tokens. Must never enter app configuration. |
+| `ANTHROPIC_API_KEY` | Server-only key, read only when the development insight switch is enabled. |
+| `INSIGHTS_DEVELOPMENT_ENABLED` | Empty/`false` disables inference. `true` enables the development route with a valid Anthropic key. Rejected in production. |
 | `SUPABASE_URL` | Optional exact HTTPS project origin used by the transcript Data API adapter. |
 | `SUPABASE_PUBLISHABLE_KEY` | Optional project publishable key. It is paired with the user's JWT and RLS, and is never logged. |
 
 Both auth fields may be absent during local development, which keeps liveness available and authentication unavailable. Partial configuration always fails startup. Production requires both fields. The JWKS URL is derived from the trusted issuer by appending `/.well-known/jwks.json`; a request cannot select the issuer or keys. The backend can start without `DEEPGRAM_API_KEY`; the STT token route then returns `503 STT_UNAVAILABLE`. Supabase Data API configuration is also optional as a pair; without it, transcript sync returns `503 TRANSCRIPT_SYNC_UNAVAILABLE`. The publishable key does not bypass RLS. Provider configuration is consumed only by its server adapter and is never returned or logged. Other provider secrets remain reserved in the empty template.
 
-Model identifiers are centralized in `backend/src/config/models.ts`. The only provider integration is
-the Deepgram temporary-token adapter. STT streaming, LLM calls, and prompts are not implemented here.
+Model identifiers and generation options are centralized in `backend/src/config/models.ts`.
+The backend includes Deepgram token minting and the opt-in development Anthropic Messages adapter.
+Direct STT streaming remains in the native app. Deployment must preserve the repository's `prompts/`
+directory beside `backend/`; source and compiled prompt loaders use that fixed relative location.
 
 ## Endpoints
 
@@ -39,7 +43,56 @@ the Deepgram temporary-token adapter. STT streaming, LLM calls, and prompts are 
 | `GET /health` | Public | `200 {"status":"ok"}`. Liveness only; this is not a database/provider readiness check. |
 | `GET /v1/me` | Valid access token | `200 {"user":{"id":"<UUID>"}}`. No profile, email, workspace, subscription, or credential data. |
 | `POST /v1/stt/token` | Valid access token, consent assertion, entitlement | Returns a 30-second Deepgram bearer token for direct STT connection setup. |
+| `POST /v1/insights/stream` | Valid access token, consent assertion, entitlement, development switch | SSE progress counts and one validated transcript-only insight card. |
 | `PUT /v1/transcript/segments:batch` | Valid access token | Idempotently accepts one to 100 transcript segment revisions through the RLS-protected database RPC. |
+
+## Development insight stream
+
+The request is a JSON object with exactly these fields (only `profile` is optional):
+
+```json
+{
+  "consentConfirmed": true,
+  "language": "en",
+  "trigger": "question",
+  "transcriptWindow": "Could we clarify the next step?",
+  "profile": "Concise and cautious"
+}
+```
+
+`language` is `en` or `tr`. `trigger` is `question`, `objection`, or `term`. The nonempty transcript
+window is at most 12,000 UTF-16 code units, and profile at most 1,000. The serialized input is at most
+24,576 code units. Extra fields, whitespace-only transcripts, or invalid enums return
+`400 INVALID_INSIGHT_INPUT`. Missing positive consent returns `409 CONSENT_REQUIRED`.
+Authentication is checked first. The route uses the same temporary entitlement stub as STT.
+
+Without the explicit development switch the route returns `503 INSIGHTS_UNAVAILABLE`. One caller
+may have one active generation; up to eight may run in one process. There is a two-second cooldown
+after each generation. `429 INSIGHT_RATE_LIMITED` includes `Retry-After: 2`. These are local
+development limits, not a public service's distributed quota or billing policy.
+
+On HTTP 200, `Content-Type` is `text/event-stream; charset=utf-8` and caching is disabled. Events:
+
+| Event | Data and behavior |
+| --- | --- |
+| `started` | `requestId`; generation lifecycle has begun. |
+| `progress` | `requestId`, `receivedCharacters`; no partial model text or JSON is exposed. |
+| `card` | `requestId`, `id`, `status`, `title`, `body`, `confidence`, empty `citations`, `promptVersion`, and `grounding: "transcript_only"`. |
+| `done` | `requestId`; one validated card completed successfully. |
+| `error` | Generic `error.code: "INSIGHTS_UNAVAILABLE"`, message, and `requestId`; terminal, without `done`. |
+
+`status` is `suggestion` or `insufficient_evidence`. Title/body limits are 120/600 Unicode code points,
+and both must contain non-whitespace text. Confidence must be finite and between zero and one. The
+server validates the entire model JSON before sending `card`. The native client must treat absence of
+`done` as incomplete, even if a card arrived. Abrupt disconnects or the response deadline may close
+the connection without an error event.
+
+The adapter's total deadline is ten seconds across retry/fallback; the response deadline is twelve
+seconds. Failed streams can have incomplete usage counts. `llm_completed` logs available aggregate
+token/cache counts, attempts, request ID, and duration, including completed provider output later
+rejected by the validator. No content, keys, headers, or provider error messages are logged.
+The endpoint does not read or persist workspace data. Prompt evaluations and route/adapter tests
+remain deferred; this endpoint is not enabled for production.
 
 Protected requests carry exactly one `Authorization: Bearer <JWT>` header. Duplicate raw headers are rejected as a malformed request before verification. Tokens in cookies or query strings are not accepted. Responses have `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`, and a server-generated `X-Request-Id`. Client request IDs are ignored.
 

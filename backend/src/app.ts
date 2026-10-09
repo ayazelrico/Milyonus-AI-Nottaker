@@ -6,6 +6,10 @@ import type { Identity, TokenVerifier } from './auth/verify-token.js';
 import type { AppConfig } from './config/env.js';
 import { allowAuthenticatedEntitlement } from './entitlements/check-entitlement.js';
 import type { EntitlementChecker } from './entitlements/check-entitlement.js';
+import { registerInsightRoute } from './insights/route.js';
+import { createInsightGenerator } from './insights/service.js';
+import type { InsightGenerator } from './insights/service.js';
+import { createAnthropicGenerator } from './llm/anthropic.js';
 import { writeOperationalEvent } from './observability.js';
 import type { EventSink } from './observability.js';
 import { createDeepgramTokenIssuer } from './stt/deepgram-token-issuer.js';
@@ -23,6 +27,7 @@ interface AppDependencies {
   readonly checkEntitlement?: EntitlementChecker;
   readonly issueSttToken?: SttTokenIssuer;
   readonly writeTranscriptSegments?: TranscriptSegmentWriter;
+  readonly generateInsights?: InsightGenerator;
 }
 
 interface AuthenticatedRequest {
@@ -97,11 +102,15 @@ function errorResponse(
 }
 
 export function buildApp(config: AppConfig, dependencies: AppDependencies = {}): FastifyInstance {
+  if (config.environment === 'production' && config.insights !== undefined) {
+    throw new Error('Development insights cannot be enabled in production');
+  }
   if (
     (dependencies.verifyToken !== undefined ||
       dependencies.checkEntitlement !== undefined ||
       dependencies.issueSttToken !== undefined ||
-      dependencies.writeTranscriptSegments !== undefined) &&
+      dependencies.writeTranscriptSegments !== undefined ||
+      dependencies.generateInsights !== undefined) &&
     config.environment !== 'test'
   ) {
     throw new Error('Dependency injection is restricted to tests');
@@ -208,6 +217,17 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
     const identity = await authenticate(request, reply);
     if (identity === undefined) return;
     return { user: { id: identity.identity.id } };
+  });
+
+  registerInsightRoute(app, {
+    authenticate,
+    checkEntitlement,
+    emit,
+    generate:
+      dependencies.generateInsights ??
+      (config.insights === undefined
+        ? undefined
+        : createInsightGenerator(createAnthropicGenerator(config.insights))),
   });
 
   app.post('/v1/stt/token', async (request, reply) => {

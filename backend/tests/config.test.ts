@@ -17,6 +17,7 @@ describe('configuration', () => {
       auth: undefined,
       deepgram: undefined,
       supabaseData: undefined,
+      insights: undefined,
     });
   });
 
@@ -39,6 +40,7 @@ describe('configuration', () => {
       },
       deepgram: undefined,
       supabaseData: undefined,
+      insights: undefined,
     });
     expect(JSON.stringify(config)).not.toContain('sensitive-fixture');
     expect(Object.isFrozen(config)).toBe(true);

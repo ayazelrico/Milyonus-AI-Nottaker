@@ -66,5 +66,11 @@ Supabase service-role key in `app/.env.local`.
 - Supabase development project and migrations are ready.
 - Native Supabase PKCE and Keychain flow is implemented; real account acceptance remains external.
 - Deepgram token and WebSocket paths are implemented; provider account and live soak remain external.
-- The remaining provider choices are intentionally unimplemented until the owner supplies account
-  access and the relevant phase starts.
+- AssemblyAI, embeddings, calendar, billing, and diagnostics remain unimplemented until their
+  account prerequisites and relevant phases are ready.
+
+The development Anthropic adapter and `POST /v1/insights/stream` are now implemented behind
+`INSIGHTS_DEVELOPMENT_ENABLED`. Adding `ANTHROPIC_API_KEY` alone does not activate generation.
+Prompt evaluation, route/adapter tests, and native integration remain pending. Keep the switch empty
+while provisioning credentials; enable it only for a deliberate development session after acceptance
+work resumes. See `docs/12-BACKEND-API.md` for the request and SSE contract.

@@ -22,6 +22,8 @@ This repository is the **Phase 0 foundation**. It is not a production recording 
 - Revision-aware transcript assembly, AES-GCM encrypted GRDB persistence, a durable local outbox, and
   an authenticated RLS-protected batch upload path.
 - Repository-local development tools, reproducible resources, signed local preview packaging, and CI.
+- Development-only Anthropic adapter and insight SSE route with bounded generation, strict output
+  validation, cancellation, and metadata-only usage counts. Disabled by default and blocked in production.
 
 Live meeting UI wiring, AI suggestions, cloud storage, calendar, and subscriptions are upcoming phases.
 Authentication still needs one real acceptance sign-in. The sample summary is synthetic and is never
