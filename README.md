@@ -1,3 +1,15 @@
+<div align="center">
+
+<img src="milyonus-wordmark-lg.png" alt="Milyonus" width="640" />
+
+**Native meeting notes and live assistance by Milyonus.**
+
+[Website](https://www.milyonus.com) · [Repository](https://github.com/ayazelrico/Milyonus-AI-Nottaker)
+
+</div>
+
+---
+
 # Milyonus Nottaker
 
 A native macOS AI notetaker and live meeting copilot, built with SwiftUI and a TypeScript backend.
