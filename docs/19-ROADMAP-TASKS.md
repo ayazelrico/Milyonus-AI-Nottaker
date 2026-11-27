@@ -54,7 +54,7 @@ Acceptance: p90 first card <= 3 s on replay set; <= 2 irrelevant cards / 10 min;
 - [ ] P2-02 Backend LLM wrapper (streaming, caching, retries, timeouts, usage), models config (streaming, retries, timeouts, usage and models config done; prompt caching remains)
 - [x] P2-03 `POST /v1/insights/stream` SSE (no KB yet) + contract tests
 - [ ] P2-04 TriggerDetector stage 1 (EN lexicons, TR lexicons), unit tests with labeled set
-- [ ] P2-05 Stage 2 Haiku classifier route + fallback behavior
+- [x] P2-05 Stage 2 Haiku classifier route + fallback behavior (backend route done; the client applies the stage 1 fallback on 503 when TriggerDetector lands in P2-04)
 - [ ] P2-06 ContextBuilder (window, profile, style) + token budgeting
 - [ ] P2-07 InsightClient (SSE) + progressive card model + rate limiter/cooldowns/dedupe
 - [ ] P2-08 Overlay NSPanel (floating, non-activating, full-screen aux, drag/resize, opacity, click-through)
