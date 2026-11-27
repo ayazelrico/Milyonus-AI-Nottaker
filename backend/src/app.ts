@@ -7,8 +7,9 @@ import type { Identity, TokenVerifier } from './auth/verify-token.js';
 import type { AppConfig } from './config/env.js';
 import { allowAuthenticatedEntitlement } from './entitlements/check-entitlement.js';
 import type { EntitlementChecker } from './entitlements/check-entitlement.js';
+import { classifyTrigger } from './insights/classify-trigger.js';
 import { generateInsight, InsightError } from './insights/generate-insight.js';
-import { parseInsightRequest } from './insights/schemas.js';
+import { parseClassifyRequest, parseInsightRequest } from './insights/schemas.js';
 import { createAnthropicProvider } from './llm/anthropic-provider.js';
 import type { LlmProvider } from './llm/types.js';
 import { writeOperationalEvent } from './observability.js';
@@ -393,6 +394,67 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
       send('error', { code });
     } finally {
       reply.raw.end();
+    }
+  });
+
+  app.post('/v1/triggers/classify', async (request, reply) => {
+    const authenticated = await authenticate(request, reply);
+    if (authenticated === undefined) return;
+
+    const classifyRequest = parseClassifyRequest(request.body);
+    if (classifyRequest === undefined) {
+      return errorResponse(
+        reply,
+        400,
+        'INVALID_CLASSIFY_REQUEST',
+        'Classification request is invalid.',
+        request.id,
+      );
+    }
+
+    if (!(await checkEntitlement(authenticated.identity))) {
+      return errorResponse(
+        reply,
+        403,
+        'ENTITLEMENT_REQUIRED',
+        'An active entitlement is required.',
+        request.id,
+      );
+    }
+
+    if (llmProvider === undefined) {
+      return errorResponse(
+        reply,
+        503,
+        'CLASSIFIER_UNAVAILABLE',
+        'Classification is unavailable.',
+        request.id,
+      );
+    }
+
+    const controller = new AbortController();
+    reply.raw.once('close', () => {
+      if (!reply.raw.writableEnded) controller.abort();
+    });
+    try {
+      const result = await classifyTrigger(llmProvider, classifyRequest, controller.signal);
+      emit({
+        event: 'insight_generated',
+        requestId: request.id,
+        model: result.model,
+        inputTokens: result.usage.inputTokens,
+        outputTokens: result.usage.outputTokens,
+      });
+      return result.classification;
+    } catch {
+      emit({ event: 'request_failed', requestId: request.id, statusCode: 503 });
+      return errorResponse(
+        reply,
+        503,
+        'CLASSIFIER_UNAVAILABLE',
+        'Classification is unavailable.',
+        request.id,
+      );
     }
   });
 

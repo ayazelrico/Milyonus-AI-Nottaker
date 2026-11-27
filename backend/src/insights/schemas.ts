@@ -22,6 +22,12 @@ export interface TriggerClassification {
   readonly evidence: string;
 }
 
+export interface ClassifyRequest {
+  readonly language: InsightLanguage;
+  readonly transcript: string;
+}
+
+export const maxClassifyTranscriptLength = 1_000;
 export const maxTranscriptWindowLength = 8_000;
 export const maxProfileLength = 500;
 
@@ -90,4 +96,19 @@ export function parseTriggerClassification(value: unknown): TriggerClassificatio
   if (!isConfidence(confidence)) return undefined;
   if (typeof evidence !== 'string' || evidence.length > 240) return undefined;
   return { label, confidence, evidence };
+}
+
+/** Validates the stage 2 classification request. The excerpt is short by design (latency and cost). */
+export function parseClassifyRequest(body: unknown): ClassifyRequest | undefined {
+  if (!isRecord(body) || !hasExactKeys(body, ['language', 'transcript'])) return undefined;
+  const { language, transcript } = body;
+  if (language !== 'en' && language !== 'tr') return undefined;
+  if (
+    typeof transcript !== 'string' ||
+    transcript.trim().length === 0 ||
+    transcript.length > maxClassifyTranscriptLength
+  ) {
+    return undefined;
+  }
+  return { language, transcript };
 }
