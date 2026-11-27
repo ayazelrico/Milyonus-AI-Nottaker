@@ -15,7 +15,7 @@ command results and `docs/accounts-checklist.md` for external dependencies.
 
 Goal: repo, accounts, skeletons, bundling, CI. Acceptance: empty app launches as a signed dev bundle; backend health route deployed to dev; CI green.
 
-- [ ] P0-01 Repo hygiene: `.gitignore`, `.editorconfig`, lint configs, PR template, Dependabot, `SECURITY.md`, branch protection
+- [x] P0-01 Repo hygiene: `.gitignore`, `.editorconfig`, lint configs, PR template, Dependabot, `SECURITY.md`, branch protection
 - [ ] P0-02 Accounts and keys opened (list in `00-START-HERE.md`); keys stored in `.env.local` / secret stores; record in a private checklist (no keys in repo)
 - [x] P0-03 Swift package per `02-ARCHITECTURE.md`; protocols in `Shared`; meaningful tests for implemented modules
 - [x] P0-04 Backend skeleton: Fastify, config, health route, JWT middleware, Vitest, ESLint, `.env.example`
