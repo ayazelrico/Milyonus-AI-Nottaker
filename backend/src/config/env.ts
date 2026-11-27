@@ -12,6 +12,10 @@ export interface DeepgramConfig {
   readonly apiKey: string;
 }
 
+export interface AnthropicConfig {
+  readonly apiKey: string;
+}
+
 export interface SupabaseDataConfig {
   readonly url: string;
   readonly publishableKey: string;
@@ -23,6 +27,7 @@ export interface AppConfig {
   readonly port: number;
   readonly auth: AuthConfig | undefined;
   readonly deepgram: DeepgramConfig | undefined;
+  readonly anthropic: AnthropicConfig | undefined;
   readonly supabaseData: SupabaseDataConfig | undefined;
 }
 
@@ -93,6 +98,20 @@ function deepgramConfig(env: EnvironmentValues): DeepgramConfig | undefined {
   return Object.freeze({ apiKey });
 }
 
+function anthropicConfig(env: EnvironmentValues): AnthropicConfig | undefined {
+  const apiKey = value(env, 'ANTHROPIC_API_KEY');
+  if (apiKey === undefined) return undefined;
+  const hasUnsafeCharacter = Array.from(apiKey).some((character) => {
+    const codePoint = character.codePointAt(0) ?? 0;
+    return codePoint <= 32 || codePoint === 127;
+  });
+  if (apiKey.length < 16 || apiKey.length > 512 || hasUnsafeCharacter) {
+    throw new ConfigurationError('ANTHROPIC_API_KEY');
+  }
+
+  return Object.freeze({ apiKey });
+}
+
 function supabaseDataConfig(env: EnvironmentValues): SupabaseDataConfig | undefined {
   const configuredUrl = value(env, 'SUPABASE_URL');
   const publishableKey = value(env, 'SUPABASE_PUBLISHABLE_KEY');
@@ -151,6 +170,7 @@ export function parseConfig(env: EnvironmentValues): AppConfig {
     port,
     auth: authConfig(env, environment as Environment),
     deepgram: deepgramConfig(env),
+    anthropic: anthropicConfig(env),
     supabaseData: supabaseDataConfig(env),
   });
 }

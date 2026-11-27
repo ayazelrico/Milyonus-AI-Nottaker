@@ -2,6 +2,13 @@ export type OperationalEvent =
   | { readonly event: 'server_started'; readonly port: number }
   | { readonly event: 'startup_failed' | 'shutdown_failed' }
   | {
+      readonly event: 'insight_generated';
+      readonly requestId: string;
+      readonly model: string;
+      readonly inputTokens: number;
+      readonly outputTokens: number;
+    }
+  | {
       readonly event: 'request_failed';
       readonly requestId: string;
       readonly statusCode: number;
@@ -21,6 +28,15 @@ export const writeOperationalEvent: EventSink = (event) => {
         event: event.event,
         requestId: event.requestId,
         statusCode: event.statusCode,
+      };
+      break;
+    case 'insight_generated':
+      metadata = {
+        event: event.event,
+        requestId: event.requestId,
+        model: event.model,
+        inputTokens: event.inputTokens,
+        outputTokens: event.outputTokens,
       };
       break;
     case 'startup_failed':

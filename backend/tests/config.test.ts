@@ -26,7 +26,7 @@ describe('configuration', () => {
       HOST: '0.0.0.0',
       PORT: '8080',
       ...auth,
-      ANTHROPIC_API_KEY: 'sensitive-fixture',
+      STRIPE_SECRET_KEY: 'sensitive-fixture',
     });
     expect(config).toEqual({
       environment: 'production',
@@ -38,10 +38,22 @@ describe('configuration', () => {
         jwksUrl: `${auth.AUTH_ISSUER}/.well-known/jwks.json`,
       },
       deepgram: undefined,
+      anthropic: undefined,
       supabaseData: undefined,
     });
     expect(JSON.stringify(config)).not.toContain('sensitive-fixture');
     expect(Object.isFrozen(config)).toBe(true);
+  });
+
+  it('accepts an Anthropic key and rejects malformed ones without echoing them', () => {
+    const config = parseConfig({ ANTHROPIC_API_KEY: 'valid-anthropic-key-fixture' });
+    expect(config.anthropic).toEqual({ apiKey: 'valid-anthropic-key-fixture' });
+    expect(Object.isFrozen(config.anthropic)).toBe(true);
+    expect(() => parseConfig({ ANTHROPIC_API_KEY: 'short' })).toThrow('ANTHROPIC_API_KEY');
+    expect(() => parseConfig({ ANTHROPIC_API_KEY: 'has space in the key value' })).toThrow(
+      'ANTHROPIC_API_KEY',
+    );
+    expect(parseConfig({}).anthropic).toBeUndefined();
   });
 
   it('accepts a Deepgram key without exposing it in configuration errors', () => {
