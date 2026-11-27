@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import type { OutgoingHttpHeaders } from 'node:http';
 import Fastify from 'fastify';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { bearerToken, createTokenVerifier } from './auth/verify-token.js';
@@ -6,6 +7,10 @@ import type { Identity, TokenVerifier } from './auth/verify-token.js';
 import type { AppConfig } from './config/env.js';
 import { allowAuthenticatedEntitlement } from './entitlements/check-entitlement.js';
 import type { EntitlementChecker } from './entitlements/check-entitlement.js';
+import { generateInsight, InsightError } from './insights/generate-insight.js';
+import { parseInsightRequest } from './insights/schemas.js';
+import { createAnthropicProvider } from './llm/anthropic-provider.js';
+import type { LlmProvider } from './llm/types.js';
 import { writeOperationalEvent } from './observability.js';
 import type { EventSink } from './observability.js';
 import { createDeepgramTokenIssuer } from './stt/deepgram-token-issuer.js';
@@ -23,6 +28,7 @@ interface AppDependencies {
   readonly checkEntitlement?: EntitlementChecker;
   readonly issueSttToken?: SttTokenIssuer;
   readonly writeTranscriptSegments?: TranscriptSegmentWriter;
+  readonly llmProvider?: LlmProvider;
 }
 
 interface AuthenticatedRequest {
@@ -101,7 +107,8 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
     (dependencies.verifyToken !== undefined ||
       dependencies.checkEntitlement !== undefined ||
       dependencies.issueSttToken !== undefined ||
-      dependencies.writeTranscriptSegments !== undefined) &&
+      dependencies.writeTranscriptSegments !== undefined ||
+      dependencies.llmProvider !== undefined) &&
     config.environment !== 'test'
   ) {
     throw new Error('Dependency injection is restricted to tests');
@@ -120,6 +127,9 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
     (config.supabaseData === undefined
       ? undefined
       : createSupabaseSegmentWriter(config.supabaseData));
+  const llmProvider =
+    dependencies.llmProvider ??
+    (config.anthropic === undefined ? undefined : createAnthropicProvider(config.anthropic));
   const app = Fastify({
     logger: false,
     requestIdHeader: false,
@@ -310,6 +320,79 @@ export function buildApp(config: AppConfig, dependencies: AppDependencies = {}):
         'Transcript sync is unavailable.',
         request.id,
       );
+    }
+  });
+
+  app.post('/v1/insights/stream', async (request, reply) => {
+    const authenticated = await authenticate(request, reply);
+    if (authenticated === undefined) return;
+
+    const insightRequest = parseInsightRequest(request.body);
+    if (insightRequest === undefined) {
+      return errorResponse(
+        reply,
+        400,
+        'INVALID_INSIGHT_REQUEST',
+        'Insight request is invalid.',
+        request.id,
+      );
+    }
+
+    if (!(await checkEntitlement(authenticated.identity))) {
+      return errorResponse(
+        reply,
+        403,
+        'ENTITLEMENT_REQUIRED',
+        'An active entitlement is required.',
+        request.id,
+      );
+    }
+
+    if (llmProvider === undefined) {
+      return errorResponse(
+        reply,
+        503,
+        'INSIGHTS_UNAVAILABLE',
+        'Insights are unavailable.',
+        request.id,
+      );
+    }
+
+    // Server-sent events. The stream carries validated cards only, never raw model output.
+    const controller = new AbortController();
+    reply.raw.once('close', () => {
+      if (!reply.raw.writableEnded) controller.abort();
+    });
+    reply.hijack();
+    reply.raw.writeHead(200, {
+      ...(reply.getHeaders() as OutgoingHttpHeaders),
+      'content-type': 'text/event-stream; charset=utf-8',
+      'cache-control': 'no-store',
+      connection: 'keep-alive',
+      'x-accel-buffering': 'no',
+    });
+    const send = (event: string, data: unknown): void => {
+      reply.raw.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+    };
+
+    send('started', { requestId: request.id });
+    try {
+      const result = await generateInsight(llmProvider, insightRequest, controller.signal);
+      emit({
+        event: 'insight_generated',
+        requestId: request.id,
+        model: result.model,
+        inputTokens: result.usage.inputTokens,
+        outputTokens: result.usage.outputTokens,
+      });
+      send('insight', result.card);
+      send('done', {});
+    } catch (error) {
+      const code = error instanceof InsightError ? error.code : 'INSIGHT_UNAVAILABLE';
+      emit({ event: 'request_failed', requestId: request.id, statusCode: 503 });
+      send('error', { code });
+    } finally {
+      reply.raw.end();
     }
   });
 
