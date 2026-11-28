@@ -16,7 +16,7 @@ let package = Package(
         .executable(name: "MilyonusApp", targets: ["MilyonusApp"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/supabase/supabase-swift.git", exact: "2.55.3"),
+        .package(url: "https://github.com/supabase/supabase-swift.git", exact: "2.55.8"),
         .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.11.1"),
     ],
     targets: [
